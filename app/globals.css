@@ -217,3 +217,64 @@ html[data-theme-anim="1"]::view-transition-new(root) {
 .project-card:hover .project-card__image-inner {
   transform: scale(1.06);
 }
+
+/* FocusStrip — ambient dot grid (fades out toward the edges) */
+.focus-grid {
+  background-image: radial-gradient(
+    color-mix(in srgb, var(--foreground) 9%, transparent) 1px,
+    transparent 1.5px
+  );
+  background-size: 22px 22px;
+  -webkit-mask-image: radial-gradient(
+    ellipse 75% 65% at 50% 35%,
+    black 25%,
+    transparent 78%
+  );
+  mask-image: radial-gradient(
+    ellipse 75% 65% at 50% 35%,
+    black 25%,
+    transparent 78%
+  );
+}
+
+/* FocusLens — reduced-motion / static fallback: the effect sets data-static on
+   the section, which unpins the stage and stacks every panel normally. */
+.lens-section[data-static] {
+  height: auto !important;
+}
+
+.lens-section[data-static] .lens-stage {
+  position: static !important;
+  height: auto !important;
+  overflow: visible !important;
+  padding-bottom: 4rem;
+}
+
+.lens-section[data-static] .focus-glow,
+.lens-section[data-static] .lens-footer,
+.lens-section[data-static] .lens-root--mobile {
+  display: none;
+}
+
+.lens-section[data-static] .lens-root {
+  opacity: 1 !important;
+}
+
+.lens-section[data-static] .panel-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.lens-section[data-static] .focus-panel {
+  position: static !important;
+  opacity: 1 !important;
+  transform: none !important;
+  padding-top: 0 !important;
+}
+
+.lens-section[data-static] .hl-word,
+.lens-section[data-static] .hl-kicker {
+  opacity: 1 !important;
+  transform: none !important;
+}

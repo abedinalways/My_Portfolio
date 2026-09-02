@@ -11,6 +11,7 @@ export type FocusItem = {
   description: string;
   accent: string;
   icon: LucideIcon;
+  href?: string;
   image?: string;
   tech?: string[];
 };
@@ -25,6 +26,7 @@ export const FOCUS_DATA: FocusItem[] = [
       "Architecting a web tool that leverages LLMs to generate accessible design tokens and Tailwind components instantly.",
     accent: "#6ea8fe",
     icon: Code2,
+    href: "/projects",
     image:
       "https://images.unsplash.com/photo-1618788372246-79faff060c4a?q=80&w=600&auto=format&fit=crop",
     tech: ["Next.js", "OpenAI", "Prisma"],
@@ -38,6 +40,7 @@ export const FOCUS_DATA: FocusItem[] = [
       "Deep diving into GLSL and Three.js to create hypnotic, interactive background visuals and particle systems.",
     accent: "#c084fc",
     icon: Sparkles,
+    href: "/projects",
     image:
       "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=600&auto=format&fit=crop",
     tech: ["Three.js", "GLSL", "React-Three-Fiber"],
@@ -51,6 +54,7 @@ export const FOCUS_DATA: FocusItem[] = [
       "Mastering rendering pipelines, Web Workers, and memory management for zero-jank web applications.",
     accent: "#5eead4",
     icon: BookOpen,
+    href: "/projects",
     image:
       "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=600&auto=format&fit=crop",
     tech: ["Chrome DevTools", "WASM", "Patterns"],
@@ -64,6 +68,7 @@ export const FOCUS_DATA: FocusItem[] = [
       "Defining a robust motion system that enhances usability through subtle, meaningful animation feedback.",
     accent: "#fda4af",
     icon: Palette,
+    href: "/projects",
     image:
       "https://images.unsplash.com/photo-1581291518857-4e27b48ff24e?q=80&w=600&auto=format&fit=crop",
     tech: ["Figma", "Motion", "Prototyping"],
