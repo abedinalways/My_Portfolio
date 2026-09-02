@@ -237,8 +237,80 @@ html[data-theme-anim="1"]::view-transition-new(root) {
   );
 }
 
-/* FocusLens — reduced-motion / static fallback: the effect sets data-static on
-   the section, which unpins the stage and stacks every panel normally. */
+/* FocusLens — subtle ambiance (lens movement is scroll-driven) */
+@keyframes bokeh-float {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.15;
+  }
+  50% {
+    transform: translateY(-6px) scale(1.08);
+    opacity: 0.25;
+  }
+}
+
+@keyframes lens-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.3);
+    opacity: 0.5;
+  }
+}
+
+@keyframes glow-breathe {
+  0%, 100% {
+    opacity: 0.06;
+  }
+  50% {
+    opacity: 0.12;
+  }
+}
+
+.bokeh-particle {
+  animation: bokeh-float 5s ease-in-out infinite;
+}
+
+.lens-pulse {
+  animation: lens-pulse 3s ease-in-out infinite;
+}
+
+.lens-outer-flare {
+  animation: glow-breathe 8s ease-in-out infinite;
+}
+
+/* FocusLens — responsive adjustments */
+@media (max-width: 640px) {
+  .lens-root--mobile {
+    transform: scale(0.85);
+  }
+
+  .focus-panel {
+    padding-top: 12rem !important;
+    gap: 0.75rem !important;
+  }
+
+  .focus-panel h3 {
+    font-size: 1.4rem !important;
+  }
+
+  .focus-panel p {
+    font-size: 14px !important;
+  }
+
+  .focus-panel .relative.mt-2.h-36 {
+    height: 8rem !important;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .lens-root {
+    height: min(45vh, 24rem) !important;
+    width: min(45vh, 24rem) !important;
+  }
+}
 .lens-section[data-static] {
   height: auto !important;
 }

@@ -68,30 +68,82 @@ const pivotStyle: CSSProperties = {
   transformOrigin: `${CX}px ${CY}px`,
 };
 
+/* --------------------------- Bokeh particles --------------------------- */
+const BOKEH = [
+  { r: 12, x: 70, y: 80, delay: 0 },
+  { r: 8, x: 150, y: 50, delay: 1.2 },
+  { r: 15, x: 30, y: 160, delay: 0.6 },
+  { r: 6, x: 180, y: 120, delay: 1.8 },
+  { r: 10, x: 90, y: 200, delay: 0.3 },
+  { r: 7, x: 140, y: 180, delay: 2.1 },
+  { r: 13, x: 50, y: 130, delay: 0.9 },
+  { r: 9, x: 170, y: 70, delay: 1.5 },
+];
+
 function LensSvg({ idPrefix }: { idPrefix: string }): ReactNode {
   const glassId = `${idPrefix}-glass`;
   const sheenId = `${idPrefix}-sheen`;
+  const bokehId = `${idPrefix}-bokeh`;
+  const flareId = `${idPrefix}-flare`;
+  const ringGradId = `${idPrefix}-ring-grad`;
+  const innerGlowId = `${idPrefix}-inner-glow`;
+
   return (
     <svg viewBox="0 0 480 480" className="h-full w-full" aria-hidden="true">
       <defs>
         <radialGradient id={glassId} cx="42%" cy="38%" r="72%">
-          <stop offset="0%" stopColor="#2e2e33" />
-          <stop offset="45%" stopColor="#141416" />
-          <stop offset="100%" stopColor="#050506" />
+          <stop offset="0%" stopColor="#3a3a42" />
+          <stop offset="25%" stopColor="#1e1e24" />
+          <stop offset="60%" stopColor="#0e0e12" />
+          <stop offset="100%" stopColor="#020203" />
         </radialGradient>
-        <radialGradient id={sheenId} cx="38%" cy="32%" r="46%">
-          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.32" />
+        <radialGradient id={sheenId} cx="35%" cy="28%" r="50%">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.45" />
+          <stop offset="40%" stopColor="#ffffff" stopOpacity="0.08" />
           <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+        </radialGradient>
+        <filter id={bokehId} x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="3" />
+        </filter>
+        <linearGradient id={flareId} x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.6" />
+          <stop offset="50%" stopColor="#ffffff" stopOpacity="0.1" />
+          <stop offset="100%" stopColor="#ffffff" stopOpacity="0" />
+        </linearGradient>
+        <linearGradient id={ringGradId} x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#ffffff" stopOpacity="0.12" />
+          <stop offset="50%" stopColor="#ffffff" stopOpacity="0.03" />
+          <stop offset="100%" stopColor="#ffffff" stopOpacity="0.08" />
+        </linearGradient>
+        <radialGradient id={innerGlowId} cx="50%" cy="50%" r="50%">
+          <stop offset="85%" stopColor="transparent" />
+          <stop offset="100%" stopColor="#ffffff" stopOpacity="0.06" />
         </radialGradient>
       </defs>
 
-      {/* Wrappers hold the continuous scroll rotation; children hold the intro tween */}
+      <circle
+        cx={CX}
+        cy={CY}
+        r={238}
+        style={{ ...strokeStyle(0.15), strokeWidth: 8 }}
+        fill="color-mix(in srgb, var(--foreground) 3%, transparent)"
+      />
+
+      {/* Focus crosshair — shows active focus point */}
+      <g className="focus-crosshair" style={pivotStyle}>
+        <line x1={CX - 20} y1={CY} x2={CX - 8} y2={CY} style={{ ...strokeStyle(0.4), strokeWidth: 1, strokeLinecap: "round" }} />
+        <line x1={CX + 8} y1={CY} x2={CX + 20} y2={CY} style={{ ...strokeStyle(0.4), strokeWidth: 1, strokeLinecap: "round" }} />
+        <line x1={CX} y1={CY - 20} x2={CX} y2={CY - 8} style={{ ...strokeStyle(0.4), strokeWidth: 1, strokeLinecap: "round" }} />
+        <line x1={CX} y1={CY + 8} x2={CX} y2={CY + 20} style={{ ...strokeStyle(0.4), strokeWidth: 1, strokeLinecap: "round" }} />
+        <circle cx={CX} cy={CY} r={4} style={{ fill: "color-mix(in srgb, var(--foreground) 20%, transparent)" }} />
+      </g>
+
       <g className="lens-dash-spin" style={pivotStyle}>
         <circle
           className="lens-dash"
           cx={CX}
           cy={CY}
-          r={236}
+          r={230}
           style={{ ...strokeStyle(0.35), strokeWidth: 1.5 }}
           strokeDasharray="2 9"
         />
@@ -133,69 +185,23 @@ function LensSvg({ idPrefix }: { idPrefix: string }): ReactNode {
       </g>
 
       <g className="lens-rings" style={pivotStyle}>
-        <circle
-          cx={CX}
-          cy={CY}
-          r={200}
-          style={{ ...strokeStyle(0.5), strokeWidth: 1.5 }}
-        />
-        <circle
-          cx={CX}
-          cy={CY}
-          r={188}
-          style={{ ...strokeStyle(0.07), strokeWidth: 11 }}
-        />
-        <circle
-          cx={CX}
-          cy={CY}
-          r={158}
-          style={{ ...strokeStyle(0.45), strokeWidth: 2 }}
-        />
-        <circle
-          cx={CX}
-          cy={CY}
-          r={128}
-          style={{
-            ...strokeStyle(0.22),
-            strokeWidth: 1,
-            strokeDasharray: "1 6",
-          }}
-        />
-        <circle
-          cx={CX}
-          cy={CY}
-          r={102}
-          style={{ ...strokeStyle(0.4), strokeWidth: 1.5 }}
-        />
-        <text
-          x={CX}
-          y={64}
-          textAnchor="middle"
-          style={{
-            fill: "color-mix(in srgb, var(--foreground) 34%, transparent)",
-            fontFamily: "var(--font-mono), monospace",
-            fontSize: 11,
-            letterSpacing: "0.32em",
-          }}
-        >
-          RBP · FOCUS ENGINE
-        </text>
-        <text
-          x={CX}
-          y={432}
-          textAnchor="middle"
-          style={{
-            fill: "color-mix(in srgb, var(--foreground) 26%, transparent)",
-            fontFamily: "var(--font-mono), monospace",
-            fontSize: 10,
-            letterSpacing: "0.28em",
-          }}
-        >
-          50MM · F/1.4
-        </text>
+        <circle cx={CX} cy={CY} r={200} style={{ ...strokeStyle(0.5), strokeWidth: 1.5 }} />
+        <circle cx={CX} cy={CY} r={188} style={{ ...strokeStyle(0.07), strokeWidth: 11 }} />
+        <circle cx={CX} cy={CY} r={158} style={{ ...strokeStyle(0.45), strokeWidth: 2 }} />
+        <circle cx={CX} cy={CY} r={128} style={{ ...strokeStyle(0.22), strokeWidth: 1, strokeDasharray: "1 6" }} />
+        <circle cx={CX} cy={CY} r={102} style={{ ...strokeStyle(0.4), strokeWidth: 1.5 }} />
+        <circle cx={CX} cy={CY} r={102} style={{ fill: "none", stroke: `url(#${ringGradId})`, strokeWidth: 3 }} />
       </g>
 
-      {/* Aperture blades — rotate in unison around the optical center */}
+      {/* Static text - does NOT rotate with the lens */}
+      <g>
+        <text x={CX} y={64} textAnchor="middle" style={{ fill: "color-mix(in srgb, var(--foreground) 34%, transparent)", fontFamily: "var(--font-mono), monospace", fontSize: 11, letterSpacing: "0.32em" }}>RBP · FOCUS ENGINE</text>
+        <text x={CX} y={432} textAnchor="middle" style={{ fill: "color-mix(in srgb, var(--foreground) 26%, transparent)", fontFamily: "var(--font-mono), monospace", fontSize: 10, letterSpacing: "0.28em" }}>50MM · F/1.4</text>
+      </g>
+
+      <circle cx={CX} cy={CY} r={96} fill={`url(#${innerGlowId})`} />
+
+      {/* Aperture blades */}
       <g className="lens-blades" style={pivotStyle}>
         {BLADES.map((angle) => {
           const a = (angle * Math.PI) / 180;
@@ -235,6 +241,46 @@ function LensSvg({ idPrefix }: { idPrefix: string }): ReactNode {
           />
         ))}
         <circle cx={CX} cy={CY} r={86} fill={`url(#${sheenId})`} />
+
+        {/* Bokeh particles floating inside lens */}
+        <g className="lens-bokeh" filter={`url(#${bokehId})`}>
+          {BOKEH.map((b, i) => (
+            <circle
+              key={`bokeh-${i}`}
+              className="bokeh-particle"
+              cx={CX - 100 + b.x}
+              cy={CY - 100 + b.y}
+              r={b.r}
+              fill="none"
+              stroke="rgba(255,255,255,0.15)"
+              strokeWidth={1.5}
+              style={{
+                animationDelay: `${b.delay}s`,
+              }}
+            />
+          ))}
+        </g>
+
+        {/* Light rays rotating inside lens */}
+        <g className="lens-lightrays" style={pivotStyle}>
+          {[0, 60, 120, 180, 240, 300].map((angle) => {
+            const a = (angle * Math.PI) / 180;
+            return (
+              <line
+                key={`ray-${angle}`}
+                x1={CX}
+                y1={CY}
+                x2={CX + 80 * Math.sin(a)}
+                y2={CY - 80 * Math.cos(a)}
+                stroke={`url(#${flareId})`}
+                strokeWidth={2}
+                strokeLinecap="round"
+                opacity={0.4}
+              />
+            );
+          })}
+        </g>
+
         <circle
           cx={CX}
           cy={CY}
@@ -280,7 +326,26 @@ function LensSvg({ idPrefix }: { idPrefix: string }): ReactNode {
           fill="var(--foreground)"
           fillOpacity={0.65}
         />
+        <circle
+          cx={CX}
+          cy={CY}
+          r={4}
+          fill="var(--foreground)"
+          opacity={0.8}
+          className="lens-pulse"
+        />
       </g>
+
+      {/* Outer lens flare */}
+      <circle
+        className="lens-outer-flare"
+        cx={CX}
+        cy={CY}
+        r={92}
+        fill="none"
+        stroke="rgba(255,255,255,0.08)"
+        strokeWidth={20}
+      />
     </svg>
   );
 }
@@ -294,14 +359,15 @@ function PanelBody({ index }: { index: number }): ReactNode {
     <>
       <div className="flex items-center gap-3">
         <span
-          className="grid size-9 place-items-center rounded-xl border"
+          className="grid size-10 place-items-center rounded-xl border shadow-sm"
           style={{
             color: item.accent,
             backgroundColor: `${item.accent}14`,
             borderColor: `${item.accent}40`,
+            boxShadow: `0 0 20px ${item.accent}20`,
           }}
         >
-          <Icon size={17} strokeWidth={2} />
+          <Icon size={18} strokeWidth={2} />
         </span>
         <span className="text-muted-foreground font-mono text-xs tracking-[0.22em] uppercase">
           {item.category}
@@ -313,6 +379,25 @@ function PanelBody({ index }: { index: number }): ReactNode {
           0{index + 1} / 0{N_ITEMS}
         </span>
       </div>
+
+      {item.image && (
+        <div
+          className="relative mt-2 h-36 w-full overflow-hidden rounded-2xl border sm:h-44"
+          style={{ borderColor: `${item.accent}25` }}
+        >
+          <div
+            className="absolute inset-0 bg-cover bg-center transition-transform duration-700 hover:scale-105"
+            style={{ backgroundImage: `url(${item.image})` }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+          <div
+            className="absolute inset-0"
+            style={{
+              background: `radial-gradient(circle at 30% 40%, ${item.accent}15, transparent 60%)`,
+            }}
+          />
+        </div>
+      )}
 
       <h3 className="text-foreground text-[1.7rem] leading-[1.08] font-medium tracking-tight text-balance sm:text-[2.1rem]">
         {item.title}
@@ -327,7 +412,7 @@ function PanelBody({ index }: { index: number }): ReactNode {
           {item.tech.map((tech) => (
             <li
               key={tech}
-              className="border-foreground/12 text-foreground/60 rounded-full border px-2.5 py-1 font-mono text-[11px]"
+              className="border-foreground/12 text-foreground/60 rounded-full border px-2.5 py-1 font-mono text-[11px] transition-all duration-300 hover:border-foreground/30 hover:text-foreground/80"
             >
               {tech}
             </li>
@@ -338,8 +423,18 @@ function PanelBody({ index }: { index: number }): ReactNode {
       {item.href ? (
         <a
           href={item.href}
-          className="focus-ring group/link mt-1 inline-flex w-fit items-center gap-2 rounded-full border px-4 py-2 text-sm transition-colors duration-300"
-          style={{ color: item.accent, borderColor: `${item.accent}45` }}
+          className="focus-ring group/link mt-1 inline-flex w-fit items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-medium transition-all duration-300 hover:shadow-lg"
+          style={{
+            color: item.accent,
+            borderColor: `${item.accent}45`,
+            boxShadow: `0 0 0 0 ${item.accent}00`,
+          }}
+          onMouseEnter={(e) => {
+            (e.currentTarget as HTMLElement).style.boxShadow = `0 4px 20px ${item.accent}40`;
+          }}
+          onMouseLeave={(e) => {
+            (e.currentTarget as HTMLElement).style.boxShadow = `0 0 0 0 ${item.accent}00`;
+          }}
         >
           Check it out
           <ArrowUpRight
@@ -395,6 +490,7 @@ export function FocusLens(): ReactNode {
     const blades = must(".lens-blades");
     const dash = must(".lens-dash");
     const dashSpin = must(".lens-dash-spin");
+    const crosshair = must(".focus-crosshair");
     const ticksSpin = must(".lens-ticks-spin");
     const dots = must(".lens-dots");
     const tints = $(".lens-tint");
@@ -402,6 +498,9 @@ export function FocusLens(): ReactNode {
     const kickers = $(".hl-kicker");
     const panels = $(".focus-panel");
     const glows = $(".focus-glow");
+    const lightRays = must(".lens-lightrays");
+    const outerFlare = must(".lens-outer-flare");
+    const pulse = must(".lens-pulse");
 
     const scrollObserver = onScroll({
       target: section,
@@ -453,6 +552,21 @@ export function FocusLens(): ReactNode {
       3
     );
     tl.add(
+      lightRays,
+      { opacity: [0, 1], duration: 6 },
+      4
+    );
+    tl.add(
+      outerFlare,
+      { opacity: [0, 1], duration: 8 },
+      3
+    );
+    tl.add(
+      pulse,
+      { scale: [0, 1], opacity: [0, 1], duration: 5, ease: "outExpo" },
+      5
+    );
+    tl.add(
       words,
       { y: ["115%", "0%"], duration: 6, ease: "outExpo", delay: stagger(1.2) },
       5
@@ -460,8 +574,9 @@ export function FocusLens(): ReactNode {
     tl.add(kickers, { opacity: [0, 1], y: [14, 0], duration: 5 }, 6.5);
 
     /* -- scroll-linked micro motion (runs across the whole scrub) ------- */
-    tl.add(dashSpin, { rotate: [0, 240], duration: 100 }, 0);
-    tl.add(ticksSpin, { rotate: [0, -180], duration: 100 }, 0);
+    tl.add(ticksSpin, { rotate: [0, -60], duration: 100, ease: "linear" }, 0);
+    tl.add(lightRays, { rotate: [0, 120], duration: 100, ease: "linear" }, 0);
+    tl.add(outerFlare, { rotate: [0, -30], duration: 100, ease: "linear" }, 0);
 
     /* -- accent crossfades (glow behind the lens + glass tint) ---------- */
     glows.forEach((glow, i) => {
@@ -484,13 +599,46 @@ export function FocusLens(): ReactNode {
       }
     });
 
-    // The lens takes a 45° turn at every hand-off.
+    // Focus mechanism — lens rotates to "focus" on each topic.
+    // Realistic feel: quick snap rotation with slight overshoot, then settle.
     for (let i = 0; i < N_ITEMS - 1; i++) {
+      const fromAngle = i * 45;
+      const toAngle = (i + 1) * 45;
+      const overshoot = toAngle + 3; // slight mechanical overshoot
+      const at = HANDOFF(i) - 2;
+
       tl.add(
         blades,
-        { rotate: [i * 45, (i + 1) * 45], duration: 7, ease: "inOutExpo" },
-        HANDOFF(i) - 2
+        {
+          rotate: [fromAngle, overshoot, toAngle],
+          duration: 12,
+          ease: "inOutExpo",
+        },
+        at
       );
+    }
+
+    // Fine-focus micro-motion during topic view (subtle hunting)
+    for (let i = 0; i < N_ITEMS; i++) {
+      const baseAngle = i * 45;
+      const segStart = SEG_START(i);
+      tl.add(
+        dashSpin,
+        {
+          rotate: [baseAngle - 8, baseAngle + 8, baseAngle],
+          duration: SEGMENT * 0.8,
+          ease: "inOutSine",
+        },
+        segStart
+      );
+    }
+
+    // Crosshair focus animation — fades in during transition, settles when locked
+    tl.add(crosshair, { opacity: [0, 1], duration: 4 }, 12);
+    for (let i = 0; i < N_ITEMS - 1; i++) {
+      const at = HANDOFF(i) - 2;
+      tl.add(crosshair, { opacity: [1, 0.3], duration: 3 }, at);
+      tl.add(crosshair, { opacity: [0.3, 1], duration: 4, ease: "outExpo" }, at + 3);
     }
 
     /* -- focus panels: one by one ---------------------------------------- */
