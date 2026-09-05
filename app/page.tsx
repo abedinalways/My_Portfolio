@@ -16,7 +16,7 @@ export default function HomePage(): ReactNode {
   return (
     <main id="main-content" className="flex flex-1 flex-col gap-20 sm:gap-28">
       <Hero />
-      {/* <PencilWritingHero /> */}
+     
       <RecentFocus />
       <Projects withHeadline viewMoreVisible />
       <ContactCard />
