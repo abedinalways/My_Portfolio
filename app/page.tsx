@@ -1,6 +1,7 @@
 import { ContactCard } from "@/components/contact/contact-card";
 import { Hero } from "@/components/hero/hero";
-import { RecentFocus } from "@/components/hero/recent-focus";
+import WhiteboardFocusScene from "@/components/hero/WhiteboardFocusScene";
+
 import { Projects } from "@/components/projects/projects";
 import { createMetadata, siteConfig } from "@/lib/metadata";
 import type { Metadata } from "next";
@@ -17,7 +18,7 @@ export default function HomePage(): ReactNode {
     <main id="main-content" className="flex flex-1 flex-col gap-20 sm:gap-28">
       <Hero />
      
-      <RecentFocus />
+      <WhiteboardFocusScene/>
       <Projects withHeadline viewMoreVisible />
       <ContactCard />
       <div className="h-12 sm:h-16" />
