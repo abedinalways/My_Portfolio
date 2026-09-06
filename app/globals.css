@@ -304,3 +304,84 @@ html[data-theme-anim="1"]::view-transition-new(root) {
   transition: opacity 200ms ease;
   will-change: transform, opacity;
 }
+
+/* ---------- Focus-section aurora (CSS-only, no WebGL) ----------
+   Four dim accent glows drifting behind the whiteboard. Only transform is
+   animated so each blob is composited on the GPU without repaints — a light
+   replacement for the shader layer that caused lag. Colors mirror the four
+   focus items (#8b5cf6 / #4dabf7 / #f0a63f / #f472b6). */
+.wb-aurora {
+  position: absolute;
+  border-radius: 9999px;
+  will-change: transform;
+}
+
+.wb-aurora--purple {
+  left: -9rem;
+  top: -11rem;
+  width: 36rem;
+  height: 36rem;
+  background: radial-gradient(
+    circle,
+    rgba(139, 92, 246, 0.16),
+    transparent 65%
+  );
+  animation: wb-aurora-a 26s ease-in-out infinite alternate;
+}
+
+.wb-aurora--blue {
+  right: -10rem;
+  top: -6rem;
+  width: 32rem;
+  height: 32rem;
+  background: radial-gradient(
+    circle,
+    rgba(77, 171, 247, 0.13),
+    transparent 65%
+  );
+  animation: wb-aurora-b 31s ease-in-out infinite alternate;
+}
+
+.wb-aurora--amber {
+  left: -6rem;
+  bottom: -12rem;
+  width: 30rem;
+  height: 30rem;
+  background: radial-gradient(
+    circle,
+    rgba(240, 166, 63, 0.11),
+    transparent 65%
+  );
+  animation: wb-aurora-b 24s ease-in-out infinite alternate-reverse;
+}
+
+.wb-aurora--pink {
+  right: -8rem;
+  bottom: -10rem;
+  width: 34rem;
+  height: 34rem;
+  background: radial-gradient(
+    circle,
+    rgba(244, 114, 182, 0.12),
+    transparent 65%
+  );
+  animation: wb-aurora-a 29s ease-in-out infinite alternate-reverse;
+}
+
+@keyframes wb-aurora-a {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  to {
+    transform: translate3d(4.5rem, 3rem, 0) scale(1.15);
+  }
+}
+
+@keyframes wb-aurora-b {
+  from {
+    transform: translate3d(0, 0, 0) scale(1.1);
+  }
+  to {
+    transform: translate3d(-5rem, 2.5rem, 0) scale(0.94);
+  }
+}

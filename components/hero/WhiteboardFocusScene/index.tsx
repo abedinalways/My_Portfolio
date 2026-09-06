@@ -12,8 +12,8 @@ import { BoardHeader } from "./board-header";
 import { MarkerPen } from "./pencils";
 
 
-const IN_VIEW_THRESHOLD = 0.25;
 
+const IN_VIEW_THRESHOLD = 0.25;
 
 export default function WhiteboardFocusScene() {
   const sceneRef = useRef<HTMLDivElement>(null);
@@ -46,85 +46,86 @@ export default function WhiteboardFocusScene() {
   const activeItem = FOCUS_ITEMS[activeIndex] ?? FOCUS_ITEMS[0]!;
 
   return (
-    
-      <section
-        ref={sceneRef}
-        aria-label="Focus areas"
-        className="relative flex w-full justify-center overflow-hidden bg-[#0c0c0e] px-6 py-16 sm:px-10 sm:py-24"
-      >
-        {/* soft dotted wall behind the board */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.045)_1px,transparent_1px)] [background-size:22px_22px]"
-        />
+    <section
+      ref={sceneRef}
+      aria-label="Focus areas"
+      className="bg-background relative flex w-full justify-center overflow-hidden px-6 py-16 sm:px-10 sm:py-24"
+    >
+      {/* CSS-only aurora — dim focus-accent glows drifting behind the board
+            (compositor-only transform animation, costs almost nothing) */}
+      {/* <AuroraBackground className="pointer-events-none absolute inset-0 overflow-hidden" /> */}
 
-        <div className="relative w-full max-w-2xl">
-          <BoardHeader />
+      {/* soft dotted wall behind the board */}
+      <div
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle,rgba(255,255,255,0.045)_1px,transparent_1px)] [background-size:22px_22px]"
+      />
 
-          {/* The board */}
-          <div className="relative rounded-[1.75rem] bg-[#fdfdfb] bg-[radial-gradient(circle,rgba(0,0,0,0.05)_1px,transparent_1px)] [background-size:18px_18px] p-6 shadow-[0_30px_70px_-30px_rgba(0,0,0,0.7)] ring-1 ring-black/5 sm:p-10">
-            {/* washi tape holding the board in place */}
-            <span
-              aria-hidden="true"
-              className="absolute -top-3 left-10 h-6 w-24 -rotate-6 rounded-[3px] bg-purple-300/45 shadow-sm"
-            />
-            <span
-              aria-hidden="true"
-              className="absolute -top-3 right-10 h-6 w-24 rotate-3 rounded-[3px] bg-amber-300/45 shadow-sm"
-            />
+      <div className="relative w-full max-w-2xl">
+        <BoardHeader />
 
-            <div className="relative">
-              {/* red scribble that draws once on entry */}
-              <svg
-                ref={zigzagRef}
-                viewBox="0 0 220 65"
-                fill="none"
-                className="mx-auto mb-2 block w-[55%] max-w-[220px]"
-              >
-                <path
-                  d={ZIGZAG_PATH}
-                  stroke="#d64545"
-                  strokeWidth={3}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
+        {/* The board */}
+        <div className="relative rounded-[1.75rem] bg-[#fdfdfb] bg-[radial-gradient(circle,rgba(0,0,0,0.05)_1px,transparent_1px)] [background-size:18px_18px] p-6 shadow-[0_30px_70px_-30px_rgba(0,0,0,0.7)] ring-1 ring-black/5 sm:p-10">
+          {/* washi tape holding the board in place */}
+          <span
+            aria-hidden="true"
+            className="absolute -top-3 left-10 h-6 w-24 -rotate-6 rounded-[3px] bg-purple-300/45 shadow-sm"
+          />
+          <span
+            aria-hidden="true"
+            className="absolute -top-3 right-10 h-6 w-24 rotate-3 rounded-[3px] bg-amber-300/45 shadow-sm"
+          />
 
-              <FocusGrid
-                revealed={revealedIcons}
-                activeIndex={activeIndex}
-                highlight={iconsDone && !isErasing}
-                registerIcon={(index, node) => {
-                  iconRefs.current[index] = node;
-                }}
+          <div className="relative">
+            {/* red scribble that draws once on entry */}
+            <svg
+              ref={zigzagRef}
+              viewBox="0 0 220 65"
+              fill="none"
+              className="mx-auto mb-2 block w-[55%] max-w-[220px]"
+            >
+              <path
+                d={ZIGZAG_PATH}
+                stroke="#d64545"
+                strokeWidth={3}
+                strokeLinecap="round"
+                strokeLinejoin="round"
               />
+            </svg>
 
-              <DescriptionBlock
-                item={activeItem}
-                index={activeIndex}
-                isTyping={isTyping}
-                isErasing={isErasing}
-                revealMaskRef={revealMaskRef}
-                descPenRef={descPenRef}
-              />
+            <FocusGrid
+              revealed={revealedIcons}
+              activeIndex={activeIndex}
+              highlight={iconsDone && !isErasing}
+              registerIcon={(index, node) => {
+                iconRefs.current[index] = node;
+              }}
+            />
 
-              {/* marker tray, resting inside the board */}
-              <div className="mt-8 border-t border-dashed border-black/10 pt-5">
-                <MarkerTray />
-              </div>
+            <DescriptionBlock
+              item={activeItem}
+              index={activeIndex}
+              isTyping={isTyping}
+              isErasing={isErasing}
+              revealMaskRef={revealMaskRef}
+              descPenRef={descPenRef}
+            />
 
-              {/* overlay the marker pen travels on during icon drawing */}
-              <svg
-                ref={overlayRef}
-                className="pointer-events-none absolute inset-0 h-full w-full overflow-visible"
-              >
-                <MarkerPen penRef={penRef} />
-              </svg>
+            {/* marker tray, resting inside the board */}
+            <div className="mt-8 border-t border-dashed border-black/10 pt-5">
+              <MarkerTray />
             </div>
+
+            {/* overlay the marker pen travels on during icon drawing */}
+            <svg
+              ref={overlayRef}
+              className="pointer-events-none absolute inset-0 h-full w-full overflow-visible"
+            >
+              <MarkerPen penRef={penRef} />
+            </svg>
           </div>
         </div>
-        </section>
-    
-
+      </div>
+    </section>
   );
 }
