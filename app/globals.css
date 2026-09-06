@@ -219,38 +219,19 @@ html[data-theme-anim="1"]::view-transition-new(root) {
   transform: scale(1.06);
 }
 
-/* FocusCanvas — pencil cursor smooth movement */
-.fc-pencil {
-  transition: transform 80ms linear;
-}
+/* ---------- WhiteboardFocusScene ---------- */
+/* Global styles for the whiteboard scene.
+   Handwriting uses the Caveat font already loaded via next/font
+   (--font-caveat) — no runtime @import tags needed. */
 
-/* FocusCanvas — reduced-motion fallback */
-.fc-stage[data-static] {
-  height: auto !important;
-  position: static !important;
-  overflow: visible !important;
-  padding-bottom: 4rem;
-}
-
-.fc-stage[data-static] .fc-item,
-.fc-stage[data-static] .fc-cat,
-.fc-stage[data-static] .fc-desc,
-.fc-stage[data-static] .fc-pill,
-.fc-stage[data-static] .fc-cta {
-  opacity: 1 !important;
-}
-
-.fc-stage[data-static] .fc-title {
-  stroke-dashoffset: 0 !important;
-}
-
-.fc-stage[data-static] .fc-sec-kicker,
-.fc-stage[data-static] .fc-sec-title {
-  opacity: 1 !important;
-  stroke-dashoffset: 0 !important;
-}
-
-.fc-stage[data-static] .fc-frame,
-.fc-stage[data-static] .fc-pencil {
-  opacity: 0 !important;
+/* Sketch note that pops onto the board once its focus item is typed out. */
+@keyframes wb-pop {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
