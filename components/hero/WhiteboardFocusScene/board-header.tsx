@@ -8,8 +8,8 @@
 export function BoardHeader(): React.JSX.Element {
   return (
     <div className="mb-9 flex flex-col items-center gap-2 text-center sm:mb-11">
-      <p className="font-caveat rotate-[-1.5deg] text-xl leading-none text-[#f2b8b5] sm:text-2xl">
-        a little sketch from the studio
+      <p className="font-inter rotate-[-1.5deg] text-xl leading-none text-[#f2b8b5] sm:text-2xl">
+        focusing...right now
       </p>
       <h2 className="font-serif text-[2rem] leading-[1.1] font-medium tracking-tight text-[#f5f5f4] sm:text-[2.5rem]">
         What I&rsquo;m building &amp; learning
