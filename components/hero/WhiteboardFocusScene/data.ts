@@ -74,6 +74,8 @@ export const TIMING = {
   holdMs: 2600, // time the line stays on the board before erasing
   eraseMs: 600,
   descGapMs: 420,
+  pencilEntryMs: 420, // hand brings the pencil down before the line starts
+  pencilLiftMs: 420, // hand lifts the pencil away once the line is done
 } as const;
 
 export const DRAWABLE_SELECTOR =

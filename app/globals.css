@@ -235,3 +235,72 @@ html[data-theme-anim="1"]::view-transition-new(root) {
     transform: translateY(0) scale(1);
   }
 }
+
+/* Hand pencil — driven by JS every frame while writing (see
+   use-description-cycle.ts) so the angle changes with each letter like a
+   real hand. transform-origin sits exactly on the graphite tip so whatever
+   the rotation, the nib never leaves the writing line. */
+.wb-pencil {
+  display: block;
+  transform-origin: 50% 91%; /* exactly the graphite tip */
+  will-change: transform;
+}
+
+/* Graphite smear the pencil leaves on the board where its tip has been.
+   Fades out when the pencil lifts at the end of a line. */
+.wb-smudge {
+  pointer-events: none;
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle,
+    rgba(70, 70, 72, 0.26) 0%,
+    rgba(70, 70, 72, 0.08) 45%,
+    rgba(70, 70, 72, 0) 70%
+  );
+  filter: blur(0.4px);
+  opacity: 0;
+  transition: opacity 220ms ease;
+}
+
+/* Entry — the hand brings the pencil down onto the board before each line.
+   Lives on its own wrapper so the JS-driven transforms on the outer span and
+   the rotating svg never conflict with it. */
+@keyframes wb-pencil-enter {
+  from {
+    opacity: 0;
+    transform: translateY(16px) rotate(-6deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg);
+  }
+}
+
+.wb-pencil-enter {
+  display: block;
+  animation: wb-pencil-enter 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Soft contact shadow on the board under the nib. JS scales + fades it every
+   frame so it breathes with the hand's bob and vanishes on lift-off. */
+.wb-pencil-shadow {
+  pointer-events: none;
+  position: absolute;
+  width: 26px;
+  height: 8px;
+  border-radius: 9999px;
+  background: radial-gradient(
+    ellipse,
+    rgba(0, 0, 0, 0.28) 0%,
+    rgba(0, 0, 0, 0.1) 55%,
+    rgba(0, 0, 0, 0) 75%
+  );
+  filter: blur(1px);
+  transform: translateX(-50%);
+  opacity: 0.32;
+  transition: opacity 200ms ease;
+  will-change: transform, opacity;
+}
