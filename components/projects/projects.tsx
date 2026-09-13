@@ -16,13 +16,13 @@ import {
   Check,
   Copy,
   ArrowRight,
-  Filter,
+  Play,
 } from "lucide-react";
 import type { ReactNode } from "react";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { FadeIn } from "@/components/ui/motion-primitives";
+import { motion, AnimatePresence, useInView } from "motion/react";
 
 export type Project = {
   id: string;
@@ -248,6 +248,23 @@ export type ProjectsProps = {
   viewMoreVisible?: boolean;
 };
 
+/* animation variants */
+const EASE = [0.22, 1, 0.36, 1] as const;
+const cardVariants = {
+  hidden: { opacity: 0, y: 32, scale: 0.97 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.6, delay: i * 0.08, ease: EASE },
+  }),
+};
+
+const TABS = [
+  { key: "pinned" as const, label: "Pinned", icon: <Pin className="h-3.5 w-3.5" /> },
+  { key: "all" as const, label: "All Projects", icon: <BookOpen className="h-3.5 w-3.5" /> },
+];
+
 export function Projects({
   withHeadline = false,
   viewMoreVisible = false,
@@ -256,23 +273,21 @@ export function Projects({
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedLanguage, setSelectedLanguage] = useState<string>("All");
   const [inspectProject, setInspectProject] = useState<Project | null>(null);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const searchRef = useRef<HTMLInputElement>(null);
 
-  // Extract unique languages for filter
   const languages = useMemo(() => {
     const langs = Array.from(new Set(PROJECTS.map((p) => p.language)));
     return ["All", ...langs];
   }, []);
 
-  // Filter projects based on tab, search query, and selected language
   const filteredProjects = useMemo(() => {
     let list = PROJECTS;
-
     if (viewMoreVisible) {
       list = list.slice(0, 4);
     } else if (activeTab === "pinned") {
       list = list.filter((p) => p.isPinned);
     }
-
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase();
       list = list.filter(
@@ -283,251 +298,354 @@ export function Projects({
           p.topics.some((t) => t.toLowerCase().includes(q))
       );
     }
-
     if (selectedLanguage !== "All") {
       list = list.filter((p) => p.language === selectedLanguage);
     }
-
     return list;
   }, [activeTab, searchQuery, selectedLanguage, viewMoreVisible]);
+
+  /* search open effect */
+  useEffect(() => {
+    if (searchOpen) searchRef.current?.focus();
+  }, [searchOpen]);
+
+  /* lock body scroll when panel open */
+  useEffect(() => {
+    if (inspectProject) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [inspectProject]);
 
   return (
     <section className="relative w-full py-4">
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+
+        {/* ── Headline ── */}
         {withHeadline ? (
-          <FadeIn className="flex flex-col items-center gap-3 pt-8 pb-8 text-center sm:pt-14 sm:pb-10">
-            <div className="inline-flex items-center gap-2 rounded-full border border-blue-500/20 bg-blue-500/10 px-3.5 py-1 text-xs font-mono text-blue-600 dark:text-blue-400">
-              <BookOpen className="h-3.5 w-3.5" />
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+            className="flex flex-col items-center gap-4 pt-8 pb-12 text-center sm:pt-14 sm:pb-14"
+          >
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-muted px-3.5 py-1 text-xs font-mono text-muted-foreground">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
               <span>github.com/abedinalways</span>
             </div>
-            <h2 className="font-sans text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
-              Projects & Repositories
+            <h2 className="font-serif text-4xl font-medium tracking-tight text-foreground sm:text-5xl">
+              Selected{" "}
+              <span className="relative inline-block">
+                <span className="relative z-10 bg-gradient-to-r from-blue-500 via-violet-500 to-purple-500 bg-clip-text text-transparent">
+                  Projects
+                </span>
+                <span
+                  className="absolute -bottom-1 left-0 right-0 h-px bg-gradient-to-r from-blue-500/60 via-violet-500/60 to-purple-500/60"
+                  aria-hidden
+                />
+              </span>
             </h2>
-            <p className="max-w-xl text-base text-muted-foreground sm:text-lg">
-              Explore my open-source projects, case studies, and code repositories formatted in authentic GitHub style.
+            <p className="max-w-md text-base text-muted-foreground sm:text-lg">
+              Open-source work, case studies, and code I&apos;m proud to have shipped.
             </p>
-          </FadeIn>
+          </motion.div>
         ) : null}
 
-        {/* GitHub Header Navigation Bar */}
-        <div className="mb-6 rounded-xl border border-border bg-card/60 p-3 shadow-xs backdrop-blur-md">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            {/* Nav Tabs */}
-            <div className="flex items-center gap-1 border-b border-border pb-3 md:border-b-0 md:pb-0">
-              <button
-                type="button"
-                onClick={() => setActiveTab("pinned")}
-                className={`inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-                  activeTab === "pinned"
-                    ? "bg-blue-500/15 text-blue-600 dark:text-blue-400 font-semibold"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                }`}
-              >
-                <Pin className="h-4 w-4" />
-                <span>Pinned Repos</span>
-                <span className="ml-1 rounded-full bg-muted px-2 py-0.5 text-xs text-foreground font-mono">
-                  {PROJECTS.filter((p) => p.isPinned).length}
-                </span>
-              </button>
-
-              {!viewMoreVisible && (
+        {/* ── Control Bar ── */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+          className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+        >
+          {/* Pill tabs */}
+          {!viewMoreVisible && (
+            <div className="relative flex items-center gap-1 rounded-xl border border-border bg-muted/60 p-1 backdrop-blur-sm">
+              {TABS.map((tab) => (
                 <button
+                  key={tab.key}
                   type="button"
-                  onClick={() => setActiveTab("all")}
-                  className={`inline-flex items-center gap-2 rounded-md px-3 py-1.5 text-sm font-medium transition-colors ${
-                    activeTab === "all"
-                      ? "bg-blue-500/15 text-blue-600 dark:text-blue-400 font-semibold"
-                      : "text-muted-foreground hover:bg-muted hover:text-foreground"
-                  }`}
+                  onClick={() => setActiveTab(tab.key)}
+                  className="relative flex items-center gap-1.5 rounded-lg px-3.5 py-1.5 text-sm font-medium transition-colors"
                 >
-                  <BookOpen className="h-4 w-4" />
-                  <span>All Repositories</span>
-                  <span className="ml-1 rounded-full bg-muted px-2 py-0.5 text-xs text-foreground font-mono">
-                    {PROJECTS.length}
+                  {activeTab === tab.key && (
+                    <motion.span
+                      layoutId="tab-ink"
+                      className="absolute inset-0 rounded-lg bg-background shadow-sm"
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.4 }}
+                    />
+                  )}
+                  <span className={`relative z-10 flex items-center gap-1.5 ${activeTab === tab.key ? "text-foreground" : "text-muted-foreground"}`}>
+                    {tab.icon}
+                    {tab.label}
+                    <span className="rounded-full bg-muted px-1.5 py-0.5 text-[10px] font-mono text-muted-foreground">
+                      {tab.key === "pinned"
+                        ? PROJECTS.filter((p) => p.isPinned).length
+                        : PROJECTS.length}
+                    </span>
                   </span>
                 </button>
-              )}
+              ))}
             </div>
+          )}
 
-            {/* Controls: Search and Language Filter */}
-            <div className="flex flex-wrap items-center gap-2.5">
-              {/* Search Bar */}
-              <div className="relative min-w-[200px] flex-1 md:w-64 md:flex-initial">
-                <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-                <input
-                  type="text"
-                  placeholder="Find a repository..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full rounded-md border border-border bg-background py-1.5 pl-8 pr-3 text-xs text-foreground placeholder:text-muted-foreground focus:border-blue-500 focus:outline-hidden focus:ring-1 focus:ring-blue-500"
-                />
-                {searchQuery && (
-                  <button
-                    type="button"
-                    onClick={() => setSearchQuery("")}
-                    className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+          {/* Right controls */}
+          <div className="flex flex-wrap items-center gap-2">
+            {/* Search toggle */}
+            <div className="flex items-center gap-2">
+              <AnimatePresence>
+                {searchOpen && (
+                  <motion.div
+                    key="search-input"
+                    initial={{ width: 0, opacity: 0 }}
+                    animate={{ width: 180, opacity: 1 }}
+                    exit={{ width: 0, opacity: 0 }}
+                    transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+                    className="overflow-hidden"
                   >
-                    <X className="h-3 w-3" />
-                  </button>
+                    <div className="relative">
+                      <input
+                        ref={searchRef}
+                        type="text"
+                        placeholder="Search projects…"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full rounded-lg border border-border bg-background py-1.5 pl-3 pr-7 text-xs text-foreground placeholder:text-muted-foreground focus:border-blue-500/50 focus:outline-none focus:ring-1 focus:ring-blue-500/30"
+                      />
+                      {searchQuery && (
+                        <button
+                          type="button"
+                          onClick={() => setSearchQuery("")}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                        >
+                          <X className="h-3 w-3" />
+                        </button>
+                      )}
+                    </div>
+                  </motion.div>
                 )}
-              </div>
+              </AnimatePresence>
+              <button
+                type="button"
+                onClick={() => {
+                  if (searchOpen && searchQuery) setSearchQuery("");
+                  setSearchOpen((v) => !v);
+                }}
+                className={`rounded-lg border border-border p-2 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground ${searchOpen ? "bg-muted text-foreground" : ""}`}
+                aria-label="Toggle search"
+              >
+                {searchOpen && !searchQuery ? <X className="h-3.5 w-3.5" /> : <Search className="h-3.5 w-3.5" />}
+              </button>
+            </div>
 
-              {/* Language Filter */}
-              <div className="relative inline-flex items-center">
-                <Filter className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground pointer-events-none" />
-                <select
-                  value={selectedLanguage}
-                  onChange={(e) => setSelectedLanguage(e.target.value)}
-                  className="appearance-none rounded-md border border-border bg-background py-1.5 pl-8 pr-7 text-xs font-medium text-foreground hover:bg-muted focus:border-blue-500 focus:outline-hidden"
+            {/* Language capsule chips */}
+            <div className="flex items-center gap-1 overflow-x-auto">
+              {languages.map((lang) => (
+                <button
+                  key={lang}
+                  type="button"
+                  onClick={() => setSelectedLanguage(lang)}
+                  className={`relative shrink-0 rounded-full border px-3 py-1 text-xs font-medium transition-all ${
+                    selectedLanguage === lang
+                      ? "border-blue-500/40 bg-blue-500/10 text-blue-600 dark:text-blue-400"
+                      : "border-border text-muted-foreground hover:bg-muted hover:text-foreground"
+                  }`}
                 >
-                  {languages.map((lang) => (
-                    <option key={lang} value={lang}>
-                      Language: {lang}
-                    </option>
-                  ))}
-                </select>
-              </div>
+                  {selectedLanguage === lang && (
+                    <motion.span
+                      layoutId="lang-ink"
+                      className="absolute inset-0 rounded-full bg-blue-500/10"
+                      transition={{ type: "spring", bounce: 0.2, duration: 0.35 }}
+                    />
+                  )}
+                  <span className="relative z-10">{lang}</span>
+                </button>
+              ))}
             </div>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Repository Grid */}
-        {filteredProjects.length === 0 ? (
-          <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border p-12 text-center">
-            <BookOpen className="mb-3 h-10 w-10 text-muted-foreground/60" />
-            <h3 className="text-base font-semibold text-foreground">No repositories found</h3>
-            <p className="mt-1 text-xs text-muted-foreground">
-              Try matching your search with a different keyword or language filter.
-            </p>
-            <button
-              type="button"
-              onClick={() => {
-                setSearchQuery("");
-                setSelectedLanguage("All");
-              }}
-              className="mt-4 text-xs font-medium text-blue-500 hover:underline"
+        {/* ── Bento Grid ── */}
+        <AnimatePresence mode="wait">
+          {filteredProjects.length === 0 ? (
+            <motion.div
+              key="empty"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -8 }}
+              className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-border p-16 text-center"
             >
-              Clear filters
-            </button>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-            {filteredProjects.map((project, index) => (
-              <GitHubRepoCard
-                key={project.id}
-                project={project}
-                index={index}
-                onInspect={() => setInspectProject(project)}
-              />
-            ))}
-          </div>
-        )}
+              <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-muted">
+                <Search className="h-6 w-6 text-muted-foreground/60" />
+              </div>
+              <h3 className="text-base font-semibold text-foreground">No projects found</h3>
+              <p className="mt-1.5 max-w-xs text-xs text-muted-foreground">
+                Try adjusting your search or language filter.
+              </p>
+              <button
+                type="button"
+                onClick={() => { setSearchQuery(""); setSelectedLanguage("All"); }}
+                className="mt-5 rounded-lg bg-foreground px-4 py-1.5 text-xs font-semibold text-background transition-opacity hover:opacity-80"
+              >
+                Clear filters
+              </button>
+            </motion.div>
+          ) : (
+            <motion.div key="grid" className="space-y-4">
+              {/* Featured — first project full width */}
+              {filteredProjects[0] && (
+                <motion.div custom={0} variants={cardVariants} initial="hidden" animate="visible">
+                  <ProjectCard
+                    project={filteredProjects[0]}
+                    featured
+                    onInspect={() => setInspectProject(filteredProjects[0] ?? null)}
+                  />
+                </motion.div>
+              )}
+              {/* Remaining 2-col */}
+              {filteredProjects.length > 1 && (
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                  {filteredProjects.slice(1).map((project, idx) => (
+                    <motion.div
+                      key={project.id}
+                      custom={idx + 1}
+                      variants={cardVariants}
+                      initial="hidden"
+                      animate="visible"
+                    >
+                      <ProjectCard
+                        project={project}
+                        featured={false}
+                        onInspect={() => setInspectProject(project)}
+                      />
+                    </motion.div>
+                  ))}
+                </div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-        {/* View All Button on Home */}
+        {/* View All CTA */}
         {viewMoreVisible ? (
-          <div className="mt-10 flex justify-center">
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.45, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            className="mt-12 flex justify-center"
+          >
             <Link
               href="/projects"
-              className="inline-flex items-center gap-2 rounded-lg border border-border bg-card px-5 py-2.5 text-sm font-medium text-foreground transition-all hover:border-blue-500/40 hover:bg-muted hover:shadow-md"
+              className="group inline-flex items-center gap-2.5 rounded-xl border border-border bg-card px-6 py-3 text-sm font-medium text-foreground transition-all duration-300 hover:border-blue-500/40 hover:bg-muted hover:shadow-lg hover:shadow-blue-500/5"
             >
-              <span>View all repositories on GitHub style</span>
-              <ArrowRight className="h-4 w-4 text-blue-500" />
+              <span>View all projects</span>
+              <ArrowRight className="h-4 w-4 text-blue-500 transition-transform duration-300 group-hover:translate-x-1" />
             </Link>
-          </div>
+          </motion.div>
         ) : null}
       </div>
 
-      {/* Repository README Inspector Modal */}
-      {inspectProject && (
-        <ReadmeModal project={inspectProject} onClose={() => setInspectProject(null)} />
-      )}
+      {/* ── Side Panel Inspector ── */}
+      <AnimatePresence>
+        {inspectProject && (
+          <ProjectPanel project={inspectProject} onClose={() => setInspectProject(null)} />
+        )}
+      </AnimatePresence>
     </section>
   );
 }
 
-function GitHubRepoCard({
+/* ══════════════════════════════════════════════
+   PROJECT CARD — bento card with image + content
+══════════════════════════════════════════════ */
+function ProjectCard({
   project,
-  index,
+  featured,
   onInspect,
 }: {
   project: Project;
-  index: number;
+  featured: boolean;
   onInspect: () => void;
 }): ReactNode {
+  const ref = useRef<HTMLElement>(null);
+  useInView(ref, { once: true, margin: "-80px" });
+
   return (
-    <FadeIn delay={Math.min(index * 0.05, 0.25)}>
-      <article className="group relative flex h-full flex-col justify-between rounded-xl border border-border bg-card p-5 transition-all duration-300 hover:border-blue-500/50 hover:shadow-lg hover:shadow-blue-500/5 dark:bg-[#0d1117]/90 dark:hover:border-blue-400/50">
+    <article
+      ref={ref}
+      onClick={onInspect}
+      className={`project-card group relative flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-border bg-card transition-all duration-500 hover:shadow-2xl dark:bg-[#0d1117]/80 ${
+        featured ? "md:flex-row" : ""
+      }`}
+    >
+      {/* Image */}
+      <div
+        className={`project-card__image relative overflow-hidden ${
+          featured ? "h-60 w-full md:h-auto md:w-1/2 md:shrink-0" : "h-48 w-full"
+        }`}
+      >
+        <div className="project-card__image-inner">
+          <Image
+            src={project.image}
+            alt={project.imageAlt}
+            fill
+            sizes={featured ? "(min-width: 768px) 50vw, 100vw" : "(min-width: 768px) 500px, 100vw"}
+            className="object-cover"
+          />
+        </div>
+        {/* Dark gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+        {/* Inspect hint */}
+        <div className="absolute bottom-3 left-3 flex items-center gap-1.5 rounded-lg bg-black/70 px-2.5 py-1.5 text-xs font-medium text-white backdrop-blur-sm opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+          <Code2 className="h-3.5 w-3.5 text-blue-400" />
+          View Case Study
+        </div>
+        {/* Pinned badge */}
+        {project.isPinned && (
+          <div className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-black/60 px-2.5 py-1 text-[10px] font-semibold text-amber-400 backdrop-blur-sm">
+            <Pin className="h-3 w-3" />
+            Pinned
+          </div>
+        )}
+      </div>
+
+      {/* Content */}
+      <div className={`flex flex-1 flex-col justify-between p-5 ${featured ? "md:p-7" : ""}`}>
         <div>
-          {/* Header row: Repo Icon, Name, Public tag, Action Links */}
-          <div className="flex items-start justify-between gap-2">
-            <div className="flex items-center gap-2 flex-wrap min-w-0">
-              <BookOpen className="h-4 w-4 shrink-0 text-muted-foreground group-hover:text-blue-500" />
-              <button
-                type="button"
-                onClick={onInspect}
-                className="truncate font-mono text-sm font-bold text-blue-600 hover:underline dark:text-[#58a6ff] text-left"
-              >
-                {project.repoName}
-              </button>
-              <span className="rounded-full border border-border px-2 py-0.5 text-[10px] font-medium text-muted-foreground">
-                Public
-              </span>
-            </div>
-
-            {/* Action buttons */}
-            <div className="flex items-center gap-1 shrink-0">
-              {project.isPinned && (
-                <span title="Pinned Repository" className="text-amber-500">
-                  <Pin className="h-3.5 w-3.5" />
-                </span>
-              )}
-              <a
-                href={project.githubUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="rounded-md p-1.5 text-muted-foreground hover:bg-muted hover:text-foreground"
-                title="View Code on GitHub"
-              >
-                <ExternalLink className="h-3.5 w-3.5" />
-              </a>
-            </div>
+          {/* Repo name */}
+          <div className="mb-3 flex items-center gap-1.5">
+            <span className="font-mono text-xs text-blue-500 dark:text-[#58a6ff]">
+              {project.repoName}
+            </span>
+            <span className="rounded-full border border-border px-1.5 py-0.5 text-[9px] font-medium text-muted-foreground">
+              Public
+            </span>
           </div>
 
-          {/* Title & Description */}
-          <div className="mt-3">
-            <h3 className="text-base font-semibold text-foreground group-hover:text-blue-600 dark:group-hover:text-blue-400">
-              {project.title}
-            </h3>
-            <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed line-clamp-2">
-              {project.description}
-            </p>
-          </div>
-
-          {/* Project Preview Image */}
-          <div
-            onClick={onInspect}
-            className="mt-3.5 relative w-full h-44 overflow-hidden rounded-lg border border-border/80 bg-muted cursor-pointer"
+          {/* Title */}
+          <h3
+            className={`font-serif font-medium leading-snug tracking-tight text-foreground transition-colors group-hover:text-blue-600 dark:group-hover:text-blue-400 ${
+              featured ? "text-2xl md:text-3xl" : "text-lg"
+            }`}
           >
-            <Image
-              src={project.image}
-              alt={project.imageAlt}
-              fill
-              sizes="(min-width: 768px) 500px, 100vw"
-              className="object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100 flex items-end p-3">
-              <span className="inline-flex items-center gap-1.5 text-xs font-medium text-white bg-black/70 backdrop-blur-xs px-2.5 py-1 rounded-md">
-                <Code2 className="h-3.5 w-3.5 text-blue-400" /> Inspect Repository & README
-              </span>
-            </div>
-          </div>
+            {project.title}
+          </h3>
 
-          {/* Topics / Tech Stack Badges */}
-          <div className="mt-3.5 flex flex-wrap gap-1.5">
-            {project.topics.map((topic) => (
+          {/* Description */}
+          <p className={`mt-2 leading-relaxed text-muted-foreground ${featured ? "text-sm max-w-prose" : "text-xs line-clamp-2"}`}>
+            {project.description}
+          </p>
+
+          {/* Topics */}
+          <div className="mt-4 flex flex-wrap gap-1.5">
+            {project.topics.slice(0, featured ? undefined : 3).map((topic) => (
               <span
                 key={topic}
-                className="rounded-md bg-blue-500/10 px-2 py-0.5 text-[11px] font-mono font-medium text-blue-600 dark:bg-[#121d2f] dark:text-[#58a6ff]"
+                className="rounded-full bg-blue-500/8 px-2.5 py-0.5 text-[11px] font-mono font-medium text-blue-600 dark:bg-blue-500/10 dark:text-[#58a6ff]"
               >
                 {topic}
               </span>
@@ -535,50 +653,42 @@ function GitHubRepoCard({
           </div>
         </div>
 
-        {/* Footer: Language dot, Stars, Forks, Updated info */}
-        <div className="mt-4 pt-3 border-t border-border/70 flex flex-wrap items-center justify-between text-xs text-muted-foreground gap-y-2">
-          <div className="flex items-center gap-4">
-            {/* Primary Language */}
+        {/* Footer */}
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-border/50 pt-4 text-xs text-muted-foreground">
+          <div className="flex items-center gap-3">
             <div className="flex items-center gap-1.5">
               <span
-                className="h-3 w-3 rounded-full shrink-0"
+                className="h-2.5 w-2.5 rounded-full"
                 style={{ backgroundColor: project.languageColor }}
               />
               <span className="font-medium text-foreground">{project.language}</span>
             </div>
-
-            {/* Stars */}
             <div className="flex items-center gap-1 hover:text-amber-500 transition-colors">
               <Star className="h-3.5 w-3.5 fill-current text-amber-500" />
               <span>{project.stars}</span>
             </div>
-
-            {/* Forks */}
-            <div className="flex items-center gap-1 hover:text-foreground">
+            <div className="flex items-center gap-1 hover:text-foreground transition-colors">
               <GitFork className="h-3.5 w-3.5" />
               <span>{project.forks}</span>
             </div>
           </div>
-
-          {/* Inspect Button & Last Updated */}
           <div className="flex items-center gap-3">
-            <span className="text-[11px] text-muted-foreground">{project.updatedAt}</span>
-            <button
-              type="button"
-              onClick={onInspect}
-              className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:underline dark:text-[#58a6ff]"
-            >
-              <span>README</span>
+            <span className="text-[11px]">{project.updatedAt}</span>
+            <span className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-[#58a6ff]">
               <FileCode2 className="h-3.5 w-3.5" />
-            </button>
+              README
+            </span>
           </div>
         </div>
-      </article>
-    </FadeIn>
+      </div>
+    </article>
   );
 }
 
-function ReadmeModal({
+/* ══════════════════════════════════════════════
+   SIDE PANEL INSPECTOR — slides in from right
+══════════════════════════════════════════════ */
+function ProjectPanel({
   project,
   onClose,
 }: {
@@ -595,141 +705,231 @@ function ReadmeModal({
     }
   };
 
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [onClose]);
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="relative w-full max-w-3xl max-h-[90vh] flex flex-col rounded-xl border border-border bg-background shadow-2xl overflow-hidden">
-        {/* Header */}
-        <div className="flex items-center justify-between border-b border-border bg-card px-5 py-3.5">
-          <div className="flex items-center gap-2 min-w-0">
-            <BookOpen className="h-4 w-4 text-blue-500 shrink-0" />
-            <span className="font-mono text-sm font-bold text-foreground truncate">
+    <>
+      {/* Backdrop */}
+      <motion.div
+        key="backdrop"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        transition={{ duration: 0.25 }}
+        onClick={onClose}
+        className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm"
+      />
+
+      {/* Panel */}
+      <motion.aside
+        key="panel"
+        initial={{ x: "100%", opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        exit={{ x: "100%", opacity: 0 }}
+        transition={{ type: "spring", damping: 30, stiffness: 280, mass: 0.8 }}
+        className="fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col overflow-hidden bg-background shadow-2xl sm:max-w-lg"
+      >
+        {/* Panel Header */}
+        <div className="flex items-center justify-between border-b border-border bg-card/80 backdrop-blur-md px-5 py-4">
+          <div className="flex min-w-0 items-center gap-2.5">
+            <BookOpen className="h-4 w-4 shrink-0 text-blue-500" />
+            <span className="truncate font-mono text-sm font-bold text-foreground">
               {project.repoName}
             </span>
-            <span className="rounded-md bg-blue-500/10 px-2 py-0.5 text-[10px] font-mono text-blue-600 dark:text-[#58a6ff]">
+            <span className="shrink-0 rounded-md bg-blue-500/10 px-2 py-0.5 text-[10px] font-mono text-blue-600 dark:text-[#58a6ff]">
               README.md
             </span>
           </div>
-
           <button
             type="button"
             onClick={onClose}
-            className="rounded-lg p-1 text-muted-foreground hover:bg-muted hover:text-foreground"
+            className="ml-2 rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            aria-label="Close panel"
           >
-            <X className="h-5 w-5" />
+            <X className="h-4 w-4" />
           </button>
         </div>
 
-        {/* Content Body */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
-          {/* Main Title & Image */}
-          <div>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground font-sans">
-              {project.title}
-            </h1>
-            <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
-              {project.readme.about}
-            </p>
-          </div>
-
-          <div className="relative w-full h-64 rounded-xl overflow-hidden border border-border bg-muted">
-            <Image
-              src={project.image}
-              alt={project.imageAlt}
-              fill
-              className="object-cover"
-            />
-          </div>
-
-          {/* Key Features */}
-          <div>
-            <h3 className="text-sm font-mono font-semibold text-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-blue-500" /> Key Architectural Features
-            </h3>
-            <ul className="space-y-2 text-xs sm:text-sm text-muted-foreground">
-              {project.readme.features.map((feat, idx) => (
-                <li key={idx} className="flex items-start gap-2">
-                  <span className="text-blue-500 font-bold">•</span>
-                  <span>{feat}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Tech Stack */}
-          <div>
-            <h3 className="text-sm font-mono font-semibold text-foreground uppercase tracking-wider mb-3 flex items-center gap-2">
-              <Layers className="h-4 w-4 text-purple-500" /> Tech Stack Breakdown
-            </h3>
-            <div className="flex flex-wrap gap-2">
-              {project.readme.techStack.map((tech) => (
-                <span
-                  key={tech}
-                  className="rounded-lg border border-border bg-card px-3 py-1 text-xs font-mono text-foreground shadow-2xs"
-                >
-                  {tech}
-                </span>
-              ))}
+        {/* Panel Body */}
+        <div className="flex-1 overflow-y-auto">
+          {/* Hero image */}
+          <div className="relative h-52 w-full overflow-hidden">
+            <Image src={project.image} alt={project.imageAlt} fill className="object-cover" />
+            <div className="absolute inset-0 bg-gradient-to-t from-background via-background/30 to-transparent" />
+            {/* Title overlay */}
+            <div className="absolute bottom-4 left-5 right-5">
+              <h2 className="font-serif text-xl font-medium leading-snug text-foreground drop-shadow-sm">
+                {project.title}
+              </h2>
+              <p className="mt-1 text-xs font-mono text-muted-foreground">{project.meta}</p>
             </div>
           </div>
 
-          {/* Quick Start Terminal Code Block */}
-          {project.readme.quickStart && (
+          <div className="space-y-7 p-5">
+            {/* About */}
             <div>
-              <div className="flex items-center justify-between mb-2">
-                <h3 className="text-xs font-mono font-semibold text-foreground uppercase tracking-wider flex items-center gap-2">
-                  <Terminal className="h-4 w-4 text-emerald-500" /> Quick Start
-                </h3>
-                <button
-                  type="button"
-                  onClick={handleCopy}
-                  className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
-                >
-                  {copied ? (
-                    <>
-                      <Check className="h-3.5 w-3.5 text-emerald-500" />
-                      <span className="text-emerald-500">Copied!</span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="h-3.5 w-3.5" />
-                      <span>Copy</span>
-                    </>
-                  )}
-                </button>
-              </div>
-              <pre className="p-4 rounded-lg bg-black text-emerald-400 font-mono text-xs overflow-x-auto border border-emerald-500/20">
-                <code>{project.readme.quickStart}</code>
-              </pre>
+              <SectionLabel icon={<Sparkles className="h-3.5 w-3.5" />} text="About" />
+              <p className="mt-2.5 text-sm leading-relaxed text-muted-foreground">
+                {project.readme.about}
+              </p>
             </div>
-          )}
+
+            {/* Stats pills */}
+            <div className="grid grid-cols-3 gap-3">
+              <StatPill label="Stars" value={project.stars.toString()} icon={<Star className="h-3.5 w-3.5 text-amber-500" />} />
+              <StatPill label="Forks" value={project.forks.toString()} icon={<GitFork className="h-3.5 w-3.5 text-blue-500" />} />
+              <StatPill label="Language" value={project.language} icon={<span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: project.languageColor }} />} />
+            </div>
+
+            {/* Features */}
+            <div>
+              <SectionLabel icon={<Code2 className="h-3.5 w-3.5" />} text="Key Features" />
+              <ul className="mt-3 space-y-2.5">
+                {project.readme.features.map((feat, idx) => (
+                  <motion.li
+                    key={idx}
+                    initial={{ opacity: 0, x: -8 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: idx * 0.07, duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                    className="flex items-start gap-2.5 text-sm text-muted-foreground"
+                  >
+                    <span className="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-blue-500/10">
+                      <Check className="h-2.5 w-2.5 text-blue-500" />
+                    </span>
+                    {feat}
+                  </motion.li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Tech Stack */}
+            <div>
+              <SectionLabel icon={<Layers className="h-3.5 w-3.5" />} text="Tech Stack" />
+              <div className="mt-3 flex flex-wrap gap-2">
+                {project.readme.techStack.map((tech) => (
+                  <span
+                    key={tech}
+                    className="rounded-lg border border-border bg-muted px-3 py-1 text-xs font-mono text-foreground"
+                  >
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Quick Start */}
+            {project.readme.quickStart && (
+              <div>
+                <div className="flex items-center justify-between">
+                  <SectionLabel icon={<Terminal className="h-3.5 w-3.5" />} text="Quick Start" />
+                  <button
+                    type="button"
+                    onClick={handleCopy}
+                    className="flex items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    <AnimatePresence mode="wait">
+                      {copied ? (
+                        <motion.span
+                          key="copied"
+                          initial={{ scale: 0.8, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          exit={{ scale: 0.8, opacity: 0 }}
+                          className="flex items-center gap-1 text-emerald-500"
+                        >
+                          <Check className="h-3.5 w-3.5" />
+                          Copied!
+                        </motion.span>
+                      ) : (
+                        <motion.span
+                          key="copy"
+                          initial={{ scale: 0.8, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          exit={{ scale: 0.8, opacity: 0 }}
+                          className="flex items-center gap-1"
+                        >
+                          <Copy className="h-3.5 w-3.5" />
+                          Copy
+                        </motion.span>
+                      )}
+                    </AnimatePresence>
+                  </button>
+                </div>
+                <pre className="mt-2 overflow-x-auto rounded-xl border border-emerald-500/20 bg-black p-4 font-mono text-xs text-emerald-400">
+                  <code>{project.readme.quickStart}</code>
+                </pre>
+              </div>
+            )}
+
+            {/* Topics */}
+            <div>
+              <SectionLabel icon={<Pin className="h-3.5 w-3.5" />} text="Topics" />
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                {project.topics.map((topic) => (
+                  <span
+                    key={topic}
+                    className="rounded-full bg-blue-500/8 px-2.5 py-1 text-[11px] font-mono font-medium text-blue-600 dark:bg-blue-500/10 dark:text-[#58a6ff]"
+                  >
+                    {topic}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="h-4" />
+          </div>
         </div>
 
-        {/* Footer Actions */}
-        <div className="flex items-center justify-between border-t border-border bg-card px-6 py-3.5">
-          <span className="text-xs text-muted-foreground font-mono">
-            License: MIT • {project.meta}
-          </span>
+        {/* Panel Footer */}
+        <div className="flex items-center justify-between border-t border-border bg-card/80 backdrop-blur-md px-5 py-4">
+          <span className="font-mono text-xs text-muted-foreground">MIT License</span>
           <div className="flex items-center gap-2">
             <a
               href={project.githubUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-background px-3.5 py-2 text-xs font-semibold text-foreground transition-colors hover:bg-muted"
             >
-              <ExternalLink className="h-3.5 w-3.5" /> GitHub Code
+              <ExternalLink className="h-3.5 w-3.5" />
+              GitHub
             </a>
             <a
               href={project.demoUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3.5 py-1.5 text-xs font-medium text-white hover:bg-blue-700 shadow-xs"
+              className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 px-3.5 py-2 text-xs font-semibold text-white transition-all hover:bg-blue-700 hover:shadow-lg hover:shadow-blue-500/30"
             >
-              <Sparkles className="h-3.5 w-3.5" /> Live Preview
+              <Play className="h-3.5 w-3.5" />
+              Live Demo
             </a>
           </div>
         </div>
-      </div>
+      </motion.aside>
+    </>
+  );
+}
+
+/* ── helper sub-components ── */
+function SectionLabel({ icon, text }: { icon: ReactNode; text: string }): ReactNode {
+  return (
+    <div className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-muted-foreground">
+      {icon}
+      <span>{text}</span>
     </div>
   );
 }
 
+function StatPill({ label, value, icon }: { label: string; value: string; icon: ReactNode }): ReactNode {
+  return (
+    <div className="flex flex-col gap-1.5 rounded-xl border border-border bg-muted/50 p-3">
+      <div className="flex items-center gap-1 text-xs text-muted-foreground">
+        {icon}
+        <span>{label}</span>
+      </div>
+      <span className="font-mono text-sm font-semibold text-foreground">{value}</span>
+    </div>
+  );
+}

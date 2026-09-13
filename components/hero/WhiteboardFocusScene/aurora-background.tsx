@@ -5,21 +5,21 @@
  * an earlier WebGL layer that felt heavy). Colors match the four focus items.
  */
 export function AuroraBackground({
-  className,
+    className,
 }: {
-  className?: string;
+    className?: string;
 }): React.JSX.Element {
-  return (
-    <div
-      aria-hidden="true"
-      className={
-        className ?? "pointer-events-none absolute inset-0 overflow-hidden"
-      }
-    >
-      <span className="wb-aurora wb-aurora--purple" />
-      <span className="wb-aurora wb-aurora--blue" />
-      <span className="wb-aurora wb-aurora--amber" />
-      <span className="wb-aurora wb-aurora--pink" />
-    </div>
-  );
+    return (
+        <div
+            aria-hidden="true"
+            className={
+                className ?? "pointer-events-none absolute inset-0 overflow-hidden"
+            }
+        >
+            <span className="wb-aurora wb-aurora--purple" />
+            <span className="wb-aurora wb-aurora--blue" />
+            <span className="wb-aurora wb-aurora--amber" />
+            <span className="wb-aurora wb-aurora--pink" />
+        </div>
+    );
 }
