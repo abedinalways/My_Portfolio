@@ -101,7 +101,9 @@ export function PortfolioAIChat() {
 
   const handleToggleVoiceRecord = () => {
     if (!voiceSupported) {
-      alert("Voice speech recognition is not supported in your current browser.");
+      alert(
+        "Voice speech recognition is not supported in your current browser."
+      );
       return;
     }
 
@@ -160,7 +162,7 @@ export function PortfolioAIChat() {
     setMessages((prev) => [...prev, initialAiMessage]);
 
     try {
-      const responseStream = streamAIResponse(textToSend);
+      const responseStream = streamAIResponse(textToSend, messages);
       let finalResponse = "";
 
       for await (const chunk of responseStream) {
@@ -195,7 +197,7 @@ export function PortfolioAIChat() {
   return (
     <>
       {/* Floating Trigger Widget (Bottom Right) */}
-      <div className="fixed bottom-6 right-6 z-50 flex flex-col items-center gap-3">
+      <div className="fixed right-6 bottom-6 z-50 flex flex-col items-center gap-3">
         {/* Floating Robot Avatar Character */}
         <div
           onClick={() => setIsOpen(!isOpen)}
@@ -232,13 +234,15 @@ export function PortfolioAIChat() {
           {/* Voice Mode Trigger (Audio Waveform Icon) */}
           <button
             onClick={handleToggleVoiceRecord}
-            title={isListening ? "Listening... Click to stop" : "Speak with voice"}
+            title={
+              isListening ? "Listening... Click to stop" : "Speak with voice"
+            }
             className={`flex items-center justify-center transition-transform hover:scale-110 ${
               isListening
-                ? "text-rose-400 animate-pulse"
+                ? "animate-pulse text-rose-400"
                 : isOpen && activeTab === "voice"
-                ? "text-cyan-400"
-                : "text-white/80 hover:text-white"
+                  ? "text-cyan-400"
+                  : "text-white/80 hover:text-white"
             }`}
           >
             <AudioLines size={20} />
@@ -254,7 +258,7 @@ export function PortfolioAIChat() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 30, scale: 0.95 }}
             transition={{ type: "spring", stiffness: 350, damping: 30 }}
-            className="fixed bottom-24 right-6 z-50 flex h-[540px] max-h-[80vh] w-[92vw] max-w-[400px] flex-col overflow-hidden rounded-3xl border border-white/10 bg-neutral-950/95 shadow-2xl backdrop-blur-2xl"
+            className="fixed right-6 bottom-24 z-50 flex h-[540px] max-h-[80vh] w-[92vw] max-w-[400px] flex-col overflow-hidden rounded-3xl border border-white/10 bg-neutral-950/95 shadow-2xl backdrop-blur-2xl"
           >
             {/* Modal Header */}
             <div className="flex items-center justify-between border-b border-white/10 bg-neutral-900/90 px-4 py-3 backdrop-blur-md">
@@ -265,7 +269,7 @@ export function PortfolioAIChat() {
                   isSpeaking={isSpeaking}
                 />
                 <div>
-                  <div className="flex items-center gap-1.5 font-semibold text-sm text-white">
+                  <div className="flex items-center gap-1.5 text-sm font-semibold text-white">
                     <span>Abedin AI</span>
                     <span className="rounded-full bg-blue-500/20 px-2 py-0.5 font-mono text-[9px] text-blue-300">
                       ASSISTANT
@@ -275,8 +279,8 @@ export function PortfolioAIChat() {
                     {isListening
                       ? "● LISTENING TO SPEECH..."
                       : isSpeaking
-                      ? "● SPEAKING RESPONSE..."
-                      : "● ONLINE &bull; READY"}
+                        ? "● SPEAKING RESPONSE..."
+                        : "● ONLINE &bull; READY"}
                   </span>
                 </div>
               </div>
@@ -312,7 +316,7 @@ export function PortfolioAIChat() {
             </div>
 
             {/* Scrollable Message List */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4 font-sans text-xs sm:text-sm">
+            <div className="flex-1 space-y-4 overflow-y-auto p-4 font-sans text-xs sm:text-sm">
               {messages.map((msg) => {
                 const isUser = msg.sender === "user";
 
@@ -326,19 +330,19 @@ export function PortfolioAIChat() {
                     }`}
                   >
                     {!isUser && (
-                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-blue-600/30 text-blue-300 border border-blue-500/30 mt-0.5">
-                        <AnimatedRobotAvatar size="sm" className="w-5 h-6" />
+                      <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-blue-500/30 bg-blue-600/30 text-blue-300">
+                        <AnimatedRobotAvatar size="sm" className="h-6 w-5" />
                       </div>
                     )}
 
                     <div
                       className={`max-w-[82%] rounded-2xl px-4 py-3 leading-relaxed shadow-sm ${
                         isUser
-                          ? "bg-blue-600 text-white rounded-tr-xs"
-                          : "border border-white/10 bg-white/[0.06] text-white/90 rounded-tl-xs backdrop-blur-md"
+                          ? "rounded-tr-xs bg-blue-600 text-white"
+                          : "rounded-tl-xs border border-white/10 bg-white/[0.06] text-white/90 backdrop-blur-md"
                       }`}
                     >
-                      <div className="whitespace-pre-wrap font-sans">
+                      <div className="font-sans whitespace-pre-wrap">
                         {msg.text}
                       </div>
                       <span className="mt-1 block text-right font-mono text-[9px] opacity-40">
@@ -347,7 +351,7 @@ export function PortfolioAIChat() {
                     </div>
 
                     {isUser && (
-                      <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/10 text-white/80 border border-white/10 mt-0.5">
+                      <div className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/10 text-white/80">
                         <User size={14} />
                       </div>
                     )}
@@ -360,7 +364,7 @@ export function PortfolioAIChat() {
 
             {/* Suggested Quick Questions */}
             <div className="border-t border-white/10 bg-black/40 p-2.5 backdrop-blur-md">
-              <div className="flex gap-1.5 overflow-x-auto pb-1 no-scrollbar">
+              <div className="no-scrollbar flex gap-1.5 overflow-x-auto pb-1">
                 {QUICK_PROMPTS.map((prompt, i) => (
                   <button
                     key={i}
@@ -392,7 +396,7 @@ export function PortfolioAIChat() {
                     : "Type or speak your question..."
                 }
                 disabled={isGenerating}
-                className="w-full rounded-xl border border-white/10 bg-neutral-950 px-3.5 py-2.5 text-xs text-white placeholder:text-white/40 outline-none focus:border-blue-500/50"
+                className="w-full rounded-xl border border-white/10 bg-neutral-950 px-3.5 py-2.5 text-xs text-white outline-none placeholder:text-white/40 focus:border-blue-500/50"
               />
 
               <button
@@ -400,7 +404,7 @@ export function PortfolioAIChat() {
                 onClick={handleToggleVoiceRecord}
                 className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 transition ${
                   isListening
-                    ? "bg-rose-600 text-white animate-pulse"
+                    ? "animate-pulse bg-rose-600 text-white"
                     : "bg-white/5 text-white/70 hover:bg-white/10 hover:text-white"
                 }`}
               >
