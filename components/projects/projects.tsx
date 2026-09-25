@@ -41,6 +41,8 @@ export type Project = {
   image: string;
   imageAlt: string;
   githubUrl: string;
+  frontendGithubUrl?: string;
+  backendGithubUrl?: string;
   demoUrl: string;
   readme: {
     about: string;
@@ -50,7 +52,53 @@ export type Project = {
   };
 };
 
+export function openProjectModal(id: string) {
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new CustomEvent("open-project-modal", { detail: { id } }));
+  }
+}
+
 const PROJECTS: Project[] = [
+  {
+    id: "bio-identifier",
+    repoName: "abedinalways/bio-identifier",
+    title: "Bio-Identifier — AI Snake & Insect Recognition",
+    description:
+      "An intelligent platform powered by computer vision to identify snake and insect species, assess venomous risk, and explore biological taxonomy.",
+    meta: "Full-Stack Engineer • 2026",
+    language: "TypeScript",
+    languageColor: "#3178c6",
+    stars: 89,
+    forks: 14,
+    topics: ["nextjs", "nestjs", "typescript", "ai-vision", "tailwindcss", "prisma"],
+    isPinned: true,
+    updatedAt: "Active in development",
+    imageRatio: 16 / 9,
+    image: "/bio-identifier.jpg",
+    imageAlt: "Bio-Identifier AI snake and insect classification platform mockup",
+    githubUrl: "https://github.com/abedinalways/bio-identifier-frontend",
+    frontendGithubUrl: "https://github.com/abedinalways/bio-identifier-frontend",
+    backendGithubUrl: "https://github.com/abedinalways/bio-identifier-backend",
+    demoUrl: "https://github.com/abedinalways/bio-identifier-frontend",
+    readme: {
+      about:
+        "Bio-Identifier is an AI-driven biodiversity platform built to rapidly identify snake and insect specimens from photos. It classifies biological taxonomy (Kingdom, Phylum, Class, Order, Family, Genus, Species) and alerts users to venom risk levels for safety.",
+      features: [
+        "Real-time image classification for snakes, arachnids, and insects with high accuracy (98%+ match)",
+        "Instant venomous / non-venomous safety alerts with emergency guidance",
+        "Complete biological taxonomy tree breakdown (Kingdom down to Species)",
+        "Modern, accessible Next.js frontend built with React 19 and Tailwind CSS",
+        "High-performance, modular NestJS backend with Prisma ORM and structured REST endpoints",
+      ],
+      techStack: [
+        "Frontend: Next.js, React 19, TypeScript, Tailwind CSS",
+        "Backend: NestJS, Node.js, TypeScript, Prisma ORM",
+        "AI / Vision: Deep Learning Classifier & Computer Vision APIs",
+      ],
+      quickStart:
+        "# Frontend repository\ngit clone https://github.com/abedinalways/bio-identifier-frontend.git\ncd bio-identifier-frontend && pnpm install && pnpm dev\n\n# Backend repository\ngit clone https://github.com/abedinalways/bio-identifier-backend.git\ncd bio-identifier-backend && pnpm install && pnpm run start:dev",
+    },
+  },
   {
     id: "loom",
     repoName: "abedinalways/loom-ai-workspace",
@@ -321,8 +369,23 @@ export function Projects({
     };
   }, [inspectProject]);
 
+  /* listen for open-project-modal custom event */
+  useEffect(() => {
+    const handleOpenProject = (e: Event) => {
+      const customEvent = e as CustomEvent<{ id: string }>;
+      const found = PROJECTS.find((p) => p.id === customEvent.detail?.id);
+      if (found) {
+        setInspectProject(found);
+      }
+    };
+    window.addEventListener("open-project-modal", handleOpenProject);
+    return () => {
+      window.removeEventListener("open-project-modal", handleOpenProject);
+    };
+  }, []);
+
   return (
-    <section className="relative w-full py-4">
+    <section id="projects" className="relative w-full py-4 scroll-mt-24">
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
 
         {/* ── Headline ── */}
@@ -886,16 +949,39 @@ function ProjectPanel({
         {/* Panel Footer */}
         <div className="flex items-center justify-between border-t border-border bg-card/80 backdrop-blur-md px-5 py-4">
           <span className="font-mono text-xs text-muted-foreground">MIT License</span>
-          <div className="flex items-center gap-2">
-            <a
-              href={project.githubUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-background px-3.5 py-2 text-xs font-semibold text-foreground transition-colors hover:bg-muted"
-            >
-              <ExternalLink className="h-3.5 w-3.5" />
-              GitHub
-            </a>
+          <div className="flex flex-wrap items-center gap-2">
+            {project.frontendGithubUrl && project.backendGithubUrl ? (
+              <>
+                <a
+                  href={project.frontendGithubUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-background px-3 py-2 text-xs font-semibold text-foreground transition-colors hover:bg-muted"
+                >
+                  <ExternalLink className="h-3.5 w-3.5" />
+                  Frontend Repo
+                </a>
+                <a
+                  href={project.backendGithubUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-background px-3 py-2 text-xs font-semibold text-foreground transition-colors hover:bg-muted"
+                >
+                  <ExternalLink className="h-3.5 w-3.5" />
+                  Backend Repo
+                </a>
+              </>
+            ) : (
+              <a
+                href={project.githubUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-background px-3.5 py-2 text-xs font-semibold text-foreground transition-colors hover:bg-muted"
+              >
+                <ExternalLink className="h-3.5 w-3.5" />
+                GitHub
+              </a>
+            )}
             <a
               href={project.demoUrl}
               target="_blank"
