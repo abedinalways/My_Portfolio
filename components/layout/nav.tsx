@@ -5,6 +5,7 @@ import { motion } from "motion/react";
 import { useTheme } from "next-themes";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { openResumeModal } from "@/components/resume/interactive-resume-modal";
 import {
   useEffect,
   useLayoutEffect,
@@ -199,6 +200,14 @@ export function Nav(): ReactNode {
             );
           })}
         </ul>
+        <button
+          type="button"
+          onClick={openResumeModal}
+          className="focus-ring relative inline-flex cursor-pointer items-center justify-center rounded-full px-3.5 py-1.5 text-sm font-medium text-foreground/60 transition-colors duration-300 hover:text-foreground"
+          title="Open Resume"
+        >
+          Resume
+        </button>
         <NavThemeToggle />
       </div>
     </nav>
