@@ -17,6 +17,7 @@ import {
   Copy,
   ArrowRight,
   Play,
+  Globe,
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { useState, useMemo, useRef, useEffect } from "react";
@@ -36,14 +37,27 @@ export type Project = {
   forks: number;
   topics: string[];
   isPinned: boolean;
+  isClientProject?: boolean;
   updatedAt: string;
   imageRatio: number;
   image: string;
+  secondaryImage?: string;
+  secondaryImageRatio?: number;
+  secondaryImageTitle?: string;
+  galleryImages?: {
+    image: string;
+    title: string;
+    ratio?: number;
+  }[];
   imageAlt: string;
-  githubUrl: string;
+  githubUrl?: string;
   frontendGithubUrl?: string;
   backendGithubUrl?: string;
   demoUrl: string;
+  liveLinks?: {
+    label: string;
+    url: string;
+  }[];
   readme: {
     about: string;
     features: string[];
@@ -59,6 +73,309 @@ export function openProjectModal(id: string) {
 }
 
 const PROJECTS: Project[] = [
+  {
+    id: "tablerounds",
+    repoName: "tablerounds.ai",
+    title: "TableRounds — Medical & Surgical Board Examination Platform",
+    description:
+      "A clinician-built platform that brings board-style question banks and a vetted community of surgeons, dentists, and trainees into one place.",
+    meta: "Frontend Engineer • Client Project • 2026",
+    language: "TypeScript",
+    languageColor: "#3178c6",
+    stars: 142,
+    forks: 28,
+    topics: [
+      "nextjs",
+      "react",
+      "typescript",
+      "tailwind",
+      "redux-toolkit",
+      "socketio",
+      "tiptap",
+      "recharts",
+    ],
+    isPinned: true,
+    isClientProject: true,
+    updatedAt: "Live in Production",
+    imageRatio: 1024 / 484,
+    image: "/tablerounds.png",
+    secondaryImage: "/tablerounds-dashboard.png",
+    secondaryImageRatio: 1024 / 489,
+    secondaryImageTitle: "Clinical Examination Dashboard Preview",
+    imageAlt: "TableRounds medical education and board preparation platform hero",
+    githubUrl: "",
+    demoUrl: "https://tablerounds.ai",
+    readme: {
+      about:
+        "TableRounds is a clinician-built platform that brings board-style question banks and a vetted community of surgeons, dentists, and trainees into one place. Create a verified profile, work through speciality-tagged questions with detailed explanations, track your performance by topic, and connect with colleagues invested in high clinical standards.",
+      features: [
+        "📝 Dynamic Quiz Engine — Create and participate in tests with real-time feedback and rich media",
+        "📊 Advanced Analytics — Performance insights using Recharts — score trends, topic breakdowns, and time analytics",
+        "🏆 Global Leaderboard — Interactive rankings with Leaflet-powered map visualizations",
+        "💬 Real-time Chat — Socket.io messaging with typing indicators, read receipts, and notifications",
+        "👤 Professional Profile — Academic/professional profiles with education, experience, and publications",
+        "⚡ Test Runner — Timed tests with auto-save, bookmarks, sip-read, and review modes",
+      ],
+      techStack: [
+        "Framework: Next.js 16 (App Router), React 19",
+        "Language: TypeScript 5 (Strict Mode)",
+        "State Management: Redux Toolkit, RTK Query",
+        "Styling: Tailwind CSS 4, shadcn/ui",
+        "Animations: GSAP, ScrollTrigger, Lenis",
+        "Rich Text: Tiptap Editor",
+        "Forms & Validation: React Hook Form, Zod",
+        "Charts & Maps: Recharts, Leaflet, React Leaflet",
+        "Realtime: Socket.io Client",
+        "Email & Messaging: Resend, EmailJS",
+        "Auth: JWT (HTTP-only secure cookies)",
+      ],
+      quickStart:
+        "Project Architecture Overview:\n\nsrc/\n├── app/         # App Router (Dashboard, Auth, Client, Tests)\n├── components/  # UI primitives and feature clinical widgets\n├── features/    # Redux slices and feature logic\n├── hooks/       # Shared custom hooks\n├── lib/         # Utilities, API configs, socket setup\n├── redux/       # Global state and RTK Query APIs\n└── types/       # TypeScript interfaces\n\nLive Platform: https://tablerounds.ai\nClient Project — Repository is private & proprietary.",
+    },
+  },
+  {
+    id: "itba-expo",
+    repoName: "itbaexpo.ie",
+    title: "ITBA Expo 2027 — Exhibition Stand Booking & Management Platform",
+    description:
+      "A modern, full-stack enterprise web application for ITBA Expo 2027 (supported by The Irish Field), featuring an interactive SVG floor map, Stripe stand reservations, and organizer admin dashboard.",
+    meta: "Full-Stack Engineer • Client Platform • 2026",
+    language: "TypeScript",
+    languageColor: "#3178c6",
+    stars: 124,
+    forks: 19,
+    topics: [
+      "nextjs",
+      "react",
+      "typescript",
+      "tailwind",
+      "redux-toolkit",
+      "stripe",
+      "socketio",
+      "recharts",
+    ],
+    isPinned: true,
+    isClientProject: true,
+    updatedAt: "Live in Production",
+    imageRatio: 1024 / 490,
+    image: "/itba-expo.png",
+    secondaryImage: "/itba-expo-map.png",
+    secondaryImageRatio: 1024 / 730,
+    secondaryImageTitle: "Interactive SVG Floor Map & Stand Booking Preview",
+    imageAlt: "ITBA Expo 2027 exhibition stand booking and management platform hero and floor map",
+    githubUrl: "https://github.com/backbencherstudio/hanoijane01",
+    demoUrl: "https://itbaexpo.ie/",
+    readme: {
+      about:
+        "A modern, full-stack enterprise web application designed for ITBA Expo 2027 (Supported by The Irish Field). The platform enables exhibitors to explore an interactive SVG-based exhibition floor plan, reserve and purchase stands with Stripe, and manage their bookings. It also provides event organizers with a comprehensive admin dashboard for stand inventory, booking workflows, payments, document reviews, and real-time analytics.",
+      features: [
+        "🗺️ Interactive SVG Floor Plan — Dynamic hall categories with fluid zoom & pan (react-zoom-pan-pinch), live color-coded stand availability, and one-click booking tooltips",
+        "💳 Multi-Step Booking & Stripe Elements Checkout — Stand selection, digital agreement, attendee info collection with international phone validation, add-on packages, and instant confirmation receipts",
+        "📊 Admin Management Dashboard — Executive analytics via Recharts (occupancy rates, revenue tracking), booking request approval/rejection workflows, and stand inventory management",
+        "⚡ Real-Time Socket.io WebSockets — Live notifications for booking approvals, status updates, and broadcast announcements without requiring page refreshes",
+        "🔐 Role-Based Access Control (RBAC) & Security — Custom middleware protecting public visitor routes, exhibitor accounts, and admin dashboards with secure cookie sessions",
+        "📑 Exhibitor Document Review — Regulatory compliance inspection and document verification system for event organizers",
+      ],
+      techStack: [
+        "Framework: Next.js 16 (App Router, Turbopack), React 19",
+        "Language: TypeScript (Strict Mode)",
+        "Styling & UI: Tailwind CSS v4, Radix UI Primitives, Lucide React",
+        "State Management: Redux Toolkit (RTK) & RTK Query",
+        "Payment Gateway: Stripe (@stripe/stripe-js, @stripe/react-stripe-js)",
+        "Real-Time: Socket.io Client",
+        "Interactive Canvas: react-zoom-pan-pinch, Custom SVG Components",
+        "Form Management: react-hook-form, react-international-phone, libphonenumber-js, input-otp",
+        "Charts & Data Viz: Recharts",
+        "Notifications: Sonner",
+      ],
+      quickStart:
+        "Platform Architecture Overview:\n\napp/\n├── (auth)/       # Sign-in, sign-up, reset-password, verify-email\n├── (root)/       # Public portal, interactive floor map, booking checkout\n└── dashboard/    # Admin portal (analytics, stands, payments, documents)\n\nLive Platform: https://itbaexpo.ie/\nGitHub Repository: https://github.com/backbencherstudio/hanoijane01",
+    },
+  },
+  {
+    id: "kreatovate",
+    repoName: "kreatovate.com",
+    title: "Kreatovate — AI Marketing & Consulting Ecosystem",
+    description:
+      "A modern enterprise digital ecosystem of three interconnected web platforms for Kreatovate, an AI-powered marketing and business consulting enterprise, powered by Next.js and GSAP.",
+    meta: "Frontend Engineer • Client Suite • 2026",
+    language: "TypeScript",
+    languageColor: "#3178c6",
+    stars: 118,
+    forks: 16,
+    topics: [
+      "nextjs",
+      "typescript",
+      "gsap",
+      "tailwind",
+      "shadcn-ui",
+      "ai-consulting",
+      "web3",
+      "framer-motion",
+    ],
+    isPinned: true,
+    isClientProject: true,
+    updatedAt: "Live in Production",
+    imageRatio: 640 / 308,
+    image: "/kreatovate.png",
+    secondaryImage: "/kreatovate-about.png",
+    secondaryImageRatio: 1024 / 485,
+    secondaryImageTitle: "Interactive Consulting & 3D Visual Showcase",
+    galleryImages: [
+      {
+        image: "/kreatovate-books.png",
+        title: "Publications & Scalable Growth Strategy Suite",
+        ratio: 1024 / 447,
+      },
+    ],
+    imageAlt: "Kreatovate AI marketing and consulting suite platform hero",
+    githubUrl: "",
+    demoUrl: "https://kreatovate.com/",
+    liveLinks: [
+      { label: "Main Platform (kreatovate.com)", url: "https://kreatovate.com/" },
+      { label: "Launchpad / Workforce Platform", url: "https://launchpad.kreatovate.com/" },
+      { label: "Projects & Innovation Showcase", url: "https://projects.kreatovate.com/" },
+    ],
+    readme: {
+      about:
+        "The Kreatovate Project Suite comprises three interconnected enterprise web applications developed for Kreatovate, an AI-driven marketing and business consulting firm. Each project addresses a core facet of Kreatovate's digital operations — from official brand storytelling and service consulting to workforce experience management and creative motion experimentation.",
+      features: [
+        "🌐 Kreatovate Main Site — Official corporate portal showcasing AI consulting services, team leadership, strategic frameworks, and consultation lead intake",
+        "👥 Workforce Experience Platform — High-impact internal portal built to spotlight company culture, workforce initiatives, and talent onboarding workflows",
+        "⚡ Innovation & Bumps Micro-Project — Experimental marketing and visual storytelling canvas with high-performance animations and fluid transitions",
+        "✨ Advanced GSAP Motion Design — Smooth scroll-triggered narrative sections, fade-in sequences, and micro-interactions optimized for 60fps rendering",
+        "📱 Fully Responsive & Accessible — Built on Next.js App Router and Shadcn/UI primitives with comprehensive SEO meta tags and structured schema",
+        "🔗 Unified Brand Ecosystem — Cohesive design system, color palettes, and typography spanning multiple independently deployed Vercel platforms",
+      ],
+      techStack: [
+        "Framework: Next.js 15 / 16 (App Router), React 19",
+        "Language: TypeScript 5 (Strict Mode)",
+        "Motion & Animation: GSAP, ScrollTrigger, Framer Motion",
+        "Styling & Design System: Tailwind CSS, Shadcn/UI, Lucide React",
+        "Deployment: Vercel Edge Network with Custom Subdomain Routing",
+        "Architecture: Modular Multi-Project Suite",
+      ],
+      quickStart:
+        "Ecosystem Overview & Live Links:\n\n1. Main Platform:  https://kreatovate.com/          (Mirror: https://kreatovate.vercel.app/)\n2. Launchpad:      https://launchpad.kreatovate.com/ (Mirror: https://workforce-kreatovate.vercel.app/)\n3. Projects Hub:   https://projects.kreatovate.com/  (Mirror: https://bumps-kreatovate.vercel.app/)\n\nClient Platform Suite — Enterprise Production Deployment.",
+    },
+  },
+  {
+    id: "fleetos-pro",
+    repoName: "fleetos.pro",
+    title: "Fleetos Pro — Multi-Tenant Freight & Dispatch Management",
+    description:
+      "A production-oriented, multi-tenant freight & logistics dispatch management platform with isolated workspaces for Dispatchers, Admins, and Super Admins, real-time Socket.io chat, and live tracking.",
+    meta: "Full-Stack Engineer • Enterprise Platform • 2026",
+    language: "TypeScript",
+    languageColor: "#3178c6",
+    stars: 136,
+    forks: 22,
+    topics: [
+      "nextjs",
+      "react",
+      "typescript",
+      "redux-toolkit",
+      "socketio",
+      "tailwind",
+      "shadcn-ui",
+      "recharts",
+    ],
+    isPinned: true,
+    isClientProject: true,
+    updatedAt: "Live in Production",
+    imageRatio: 1024 / 489,
+    image: "/fleetos.png",
+    secondaryImage: "/fleetos-dashboard.png",
+    secondaryImageRatio: 666 / 375,
+    secondaryImageTitle: "Role-Based Dispatch & Admin Operations Dashboard",
+    imageAlt: "Fleetos Pro freight and logistics dispatch management platform",
+    githubUrl: "https://github.com/alshohid/reedsexpress",
+    demoUrl: "https://fleetos.pro/",
+    readme: {
+      about:
+        "Fleetos Pro is a production-oriented, multi-tenant freight and logistics dispatch management platform built to orchestrate end-to-end supply chain operations: load dispatching, carrier and driver onboarding, active shipment tracking, automated invoicing and financial statements, and multi-tenant organization administration.\n\nThe system features three route-isolated, role-scoped workspaces — Dispatcher, Admin, and Super Admin — backed by a unified Redux Toolkit / RTK Query data layer with automatic silent JWT token refresh and real-time Socket.io dispatch communication.",
+      features: [
+        "🏢 Role-Based Workspaces — Dedicated route-isolated portals for Dispatcher (/dispatcher/dashboard), Admin (/admin/dashboard), and Super Admin (/super-admin/dashboard)",
+        "💬 Real-Time Dispatch Communications — Socket.io powered instant messaging, active operations channels, notifications, and typing indicators",
+        "🚛 Carrier & Driver Operations — Streamlined onboarding, compliance document tracking, driver availability schedules, and performance ratings",
+        "📦 Load Dispatching & Live Tracking — Interactive load intake, automated rate confirmation, assignment flows, and shipment tracking",
+        "💰 Finance & Invoicing Suite — Automated invoice creation, statement generation flows with jsPDF export, QR code verification, and subscription plans",
+        "📊 Analytics & Reporting — Multi-metric performance dashboards, revenue trend forecasting, and utilization charts via Chart.js and Recharts",
+        "🔐 Enterprise JWT Security — Access & refresh token lifecycle with silent single-flight 401 token renewal and HTTP-only cookie persistence",
+        "🎨 Design & Mock API Mode — Built-in offline deterministic mock responder allowing complete UI exploration without active backend",
+      ],
+      techStack: [
+        "Framework: Next.js 16.1 (App Router), React 19",
+        "Language: TypeScript 5 (Strict Mode)",
+        "State & Cache: Redux Toolkit 2.2, React Redux 9, RTK Query (Custom BaseQuery Auth Refresh)",
+        "Real-Time: Socket.io Client",
+        "Styling & Primitives: Tailwind CSS v4, shadcn/ui (new-york), Radix UI",
+        "Charts & Viz: Recharts, Chart.js, react-chartjs-2",
+        "Forms & Validation: React Hook Form, date-fns, react-day-picker",
+        "Export & Utility: jsPDF, react-qr-code, js-cookie",
+      ],
+      quickStart:
+        "Architecture Overview:\n\nsrc/\n├── app/\n│   ├── (public)/       # /login, /sign-up, /forgot-password\n│   └── (protected)/    # Isolated workspaces\n│       ├── (dispatcher)/ # Dispatch operations & live tracking\n│       ├── (admin)/      # Carrier & user administration\n│       └── (super-admin)/# Organization & platform analytics\n├── redux/              # RTK Query baseApi + designMode mock responder\n└── components/         # shadcn/ui primitives & workspace widgets\n\nLive Platform: https://fleetos.pro/\nGitHub Repository: https://github.com/alshohid/reedsexpress",
+    },
+  },
+  {
+    id: "waffless",
+    repoName: "affless-frontend.vercel.app",
+    title: "Waffless — Client & Video Editor Marketplace",
+    description:
+      "A two-sided marketplace platform connecting clients and video editors with route-isolated workspaces for Clients, Editors, and Admins, live proposals, TanStack data tables, and messaging.",
+    meta: "Frontend Engineer • Client Platform • 2026",
+    language: "TypeScript",
+    languageColor: "#3178c6",
+    stars: 128,
+    forks: 18,
+    topics: [
+      "nextjs",
+      "react",
+      "typescript",
+      "redux-toolkit",
+      "tailwind",
+      "shadcn-ui",
+      "tanstack-table",
+      "apexcharts",
+    ],
+    isPinned: true,
+    isClientProject: true,
+    updatedAt: "Live in Production",
+    imageRatio: 1024 / 499,
+    image: "/waffless.png",
+    secondaryImage: "/waffless-browse.png",
+    secondaryImageRatio: 1024 / 505,
+    secondaryImageTitle: "Editor Job Board & Marketplace Catalog",
+    imageAlt: "Waffless video editor marketplace platform hero and job board",
+    githubUrl: "",
+    demoUrl: "https://affless-frontend.vercel.app/",
+    readme: {
+      about:
+        "Waffless is a modern, two-sided video editor marketplace where clients post video-editing jobs and editors browse, bid on, and deliver them. The frontend is built on Next.js 16 App Router and React 19, serving three distinct experiences from a single unified codebase: Public Visitors, Clients (/client), Editors (/editor), and Platform Admins (/admin).",
+      features: [
+        "🎬 Two-Sided Marketplace — Streamlined workflows for clients to post jobs and review bids, and for editors to discover projects and deliver video assets",
+        "🏢 Route-Group Architecture — Isolated role experiences for Public visitors (/), Clients (/client), Editors (/editor), and Admins (/admin)",
+        "⚡ Unified RTK Query Layer — Centralized API transport with automatic single-flight 401 JWT token re-authentication and cookie hydration",
+        "📋 TanStack Table Management — High-performance data tables with client/editor proposals, bids, invoices, and payment history",
+        "📊 Analytics & Financial Dashboards — Revenue, earnings, and withdrawal metrics powered by ApexCharts",
+        "💬 Real-Time Messaging & Delivery — Chat system with thread management, delivery extensions, and milestone approvals",
+        "🎨 Accessible UI & Tailwind CSS v4 — Built with shadcn/ui primitives on Radix UI, CSS-first design tokens, and fluid responsiveness",
+      ],
+      techStack: [
+        "Framework: Next.js 16.1 (App Router, Turbopack), React 19.2",
+        "Language: TypeScript 5.9 (Strict Mode)",
+        "State Management: Redux Toolkit 2.12 + RTK Query (re-auth base query)",
+        "Styling & Components: Tailwind CSS v4, shadcn/ui (new-york), Radix UI",
+        "Data Tables: @tanstack/react-table",
+        "Charts & Data Viz: ApexCharts, react-apexcharts",
+        "Rich Media & Forms: react-hook-form, input-otp, jodit-react, react-player",
+        "Deployment: Vercel Edge Network",
+      ],
+      quickStart:
+        "Architecture Overview:\n\napp/\n├── (website)/\n│   ├── (main)/        # Public marketing, job board, public profiles\n│   ├── (auth)/        # Login, signup, OTP, verify-email\n│   └── (dashboard)/   # Client & Editor workspaces (/client, /editor)\n└── (admin-dashboard)/ # Admin console (/admin)\n\nLive Platform: https://affless-frontend.vercel.app/\nClient Project — Enterprise production deployment.",
+    },
+  },
   {
     id: "bio-identifier",
     repoName: "abedinalways/bio-identifier",
@@ -332,7 +649,7 @@ export function Projects({
   const filteredProjects = useMemo(() => {
     let list = PROJECTS;
     if (viewMoreVisible) {
-      list = list.slice(0, 4);
+      list = list.slice(0, 5);
     } else if (activeTab === "pinned") {
       list = list.filter((p) => p.isPinned);
     }
@@ -685,7 +1002,7 @@ function ProjectCard({
               {project.repoName}
             </span>
             <span className="rounded-full border border-border px-1.5 py-0.5 text-[9px] font-medium text-muted-foreground">
-              Public
+              {project.isClientProject ? "Client Work" : "Public"}
             </span>
           </div>
 
@@ -804,7 +1121,7 @@ function ProjectPanel({
               {project.repoName}
             </span>
             <span className="shrink-0 rounded-md bg-blue-500/10 px-2 py-0.5 text-[10px] font-mono text-blue-600 dark:text-[#58a6ff]">
-              README.md
+              {project.isClientProject ? "OVERVIEW" : "README.md"}
             </span>
           </div>
           <button
@@ -843,9 +1160,31 @@ function ProjectPanel({
 
             {/* Stats pills */}
             <div className="grid grid-cols-3 gap-3">
-              <StatPill label="Stars" value={project.stars.toString()} icon={<Star className="h-3.5 w-3.5 text-amber-500" />} />
-              <StatPill label="Forks" value={project.forks.toString()} icon={<GitFork className="h-3.5 w-3.5 text-blue-500" />} />
-              <StatPill label="Language" value={project.language} icon={<span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: project.languageColor }} />} />
+              {project.isClientProject ? (
+                <>
+                  <StatPill
+                    label="Status"
+                    value="Live Project"
+                    icon={<span className="h-2 w-2 rounded-full bg-emerald-500" />}
+                  />
+                  <StatPill
+                    label="Platform"
+                    value={project.demoUrl ? project.demoUrl.replace(/^https?:\/\//, "") : "Live Web App"}
+                    icon={<Globe className="h-3.5 w-3.5 text-blue-500" />}
+                  />
+                  <StatPill
+                    label="Language"
+                    value={project.language}
+                    icon={<span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: project.languageColor }} />}
+                  />
+                </>
+              ) : (
+                <>
+                  <StatPill label="Stars" value={project.stars.toString()} icon={<Star className="h-3.5 w-3.5 text-amber-500" />} />
+                  <StatPill label="Forks" value={project.forks.toString()} icon={<GitFork className="h-3.5 w-3.5 text-blue-500" />} />
+                  <StatPill label="Language" value={project.language} icon={<span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ backgroundColor: project.languageColor }} />} />
+                </>
+              )}
             </div>
 
             {/* Features */}
@@ -927,6 +1266,75 @@ function ProjectPanel({
               </div>
             )}
 
+            {/* Secondary screenshot / Dashboard interface */}
+            {project.secondaryImage && (
+              <div>
+                <SectionLabel
+                  icon={<Sparkles className="h-3.5 w-3.5" />}
+                  text={project.secondaryImageTitle ?? "Application Dashboard Preview"}
+                />
+                <div
+                  className="mt-3 relative w-full overflow-hidden rounded-xl border border-border bg-card shadow-sm"
+                  style={{ aspectRatio: project.secondaryImageRatio ?? (1024 / 489) }}
+                >
+                  <Image
+                    src={project.secondaryImage}
+                    alt={`${project.title} preview`}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Gallery Screenshots */}
+            {project.galleryImages?.map((galleryItem, idx) => (
+              <div key={idx}>
+                <SectionLabel
+                  icon={<Sparkles className="h-3.5 w-3.5" />}
+                  text={galleryItem.title}
+                />
+                <div
+                  className="mt-3 relative w-full overflow-hidden rounded-xl border border-border bg-card shadow-sm"
+                  style={{ aspectRatio: galleryItem.ratio ?? (1024 / 489) }}
+                >
+                  <Image
+                    src={galleryItem.image}
+                    alt={galleryItem.title}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+              </div>
+            ))}
+
+            {/* Live Ecosystem Platforms */}
+            {project.liveLinks && project.liveLinks.length > 0 && (
+              <div>
+                <SectionLabel icon={<Globe className="h-3.5 w-3.5" />} text="Live Ecosystem Platforms" />
+                <div className="mt-3 flex flex-col gap-2">
+                  {project.liveLinks.map((link) => (
+                    <a
+                      key={link.url}
+                      href={link.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="group/link flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3 transition-colors hover:border-blue-500/40 hover:bg-muted"
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <span className="flex h-2 w-2 shrink-0 rounded-full bg-emerald-500" />
+                        <span className="truncate text-xs font-medium text-foreground">{link.label}</span>
+                      </div>
+                      <span className="flex items-center gap-1 text-[11px] font-mono text-muted-foreground group-hover/link:text-blue-500">
+                        Visit
+                        <ExternalLink className="h-3 w-3 shrink-0 transition-transform group-hover/link:translate-x-0.5" />
+                      </span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+
             {/* Topics */}
             <div>
               <SectionLabel icon={<Pin className="h-3.5 w-3.5" />} text="Topics" />
@@ -948,9 +1356,21 @@ function ProjectPanel({
 
         {/* Panel Footer */}
         <div className="flex items-center justify-between border-t border-border bg-card/80 backdrop-blur-md px-5 py-4">
-          <span className="font-mono text-xs text-muted-foreground">MIT License</span>
+          <span className="font-mono text-xs text-muted-foreground">
+            {project.isClientProject ? "Client Project • Production" : "MIT License"}
+          </span>
           <div className="flex flex-wrap items-center gap-2">
-            {project.frontendGithubUrl && project.backendGithubUrl ? (
+            {project.githubUrl ? (
+              <a
+                href={project.githubUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-background px-3.5 py-2 text-xs font-semibold text-foreground transition-colors hover:bg-muted"
+              >
+                <ExternalLink className="h-3.5 w-3.5" />
+                GitHub
+              </a>
+            ) : project.frontendGithubUrl && project.backendGithubUrl ? (
               <>
                 <a
                   href={project.frontendGithubUrl}
@@ -971,17 +1391,11 @@ function ProjectPanel({
                   Backend Repo
                 </a>
               </>
-            ) : (
-              <a
-                href={project.githubUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-background px-3.5 py-2 text-xs font-semibold text-foreground transition-colors hover:bg-muted"
-              >
-                <ExternalLink className="h-3.5 w-3.5" />
-                GitHub
-              </a>
-            )}
+            ) : project.isClientProject ? (
+              <span className="rounded-xl border border-border/80 bg-muted/60 px-3 py-2 text-xs font-mono text-muted-foreground">
+                Client Project (Private Repo)
+              </span>
+            ) : null}
             <a
               href={project.demoUrl}
               target="_blank"
