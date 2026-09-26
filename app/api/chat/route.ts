@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { env } from "@/lib/env";
 
 export const runtime = "nodejs";
 
@@ -62,7 +63,7 @@ BEHAVIORAL INSTRUCTIONS:
 `;
 
 export async function POST(req: NextRequest) {
-  const apiKey = process.env.GEMINI_API_KEY;
+  const apiKey = env.GEMINI_API_KEY;
 
   if (!apiKey) {
     return NextResponse.json(

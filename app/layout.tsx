@@ -5,6 +5,7 @@ import { SkipToContent } from "@/components/layout/skip-to-content";
 import { PortfolioAIChat } from "@/components/ai-chat/portfolio-ai-chat";
 import { InteractiveResumeModal } from "@/components/resume/interactive-resume-modal";
 import { baseMetadata } from "@/lib/metadata";
+import { Analytics } from "@vercel/analytics/react";
 import type { Metadata, Viewport } from "next";
 import { Caveat, Fraunces, Geist, Geist_Mono } from "next/font/google";
 import type { ReactNode } from "react";
@@ -73,6 +74,7 @@ export default function RootLayout({
           {children}
           <PortfolioAIChat />
           <InteractiveResumeModal />
+          <Analytics />
         </Providers>
       </body>
     </html>

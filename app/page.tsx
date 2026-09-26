@@ -1,5 +1,6 @@
 import { ContactCard } from "@/components/contact/contact-card";
 import { Hero } from "@/components/hero/hero";
+import { HeroVisitorStrip } from "@/components/analytics/hero-visitor-strip";
 import WhiteboardFocusScene from "@/components/hero/WhiteboardFocusScene";
 
 import { Projects } from "@/components/projects/projects";
@@ -16,8 +17,11 @@ export const metadata: Metadata = createMetadata({
 export default function HomePage(): ReactNode {
   return (
     <main id="main-content" className="flex flex-1 flex-col gap-20 sm:gap-28">
-      <Hero />
-      <WhiteboardFocusScene/>
+      <div>
+        <Hero />
+        <HeroVisitorStrip />
+      </div>
+      <WhiteboardFocusScene />
       <Projects withHeadline viewMoreVisible />
       <ContactCard />
       <div className="h-12 sm:h-16" />

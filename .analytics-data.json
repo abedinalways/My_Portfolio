@@ -1,0 +1,25 @@
+{
+  "totalViews": 5,
+  "uniqueVisitors": 1,
+  "visitors": [
+    "v_1790413935653_p89r0y1"
+  ],
+  "countries": {
+    "BD": 5
+  },
+  "referrers": {
+    "localhost": 4,
+    "Direct": 1
+  },
+  "pages": {
+    "/": 5
+  },
+  "devices": {
+    "desktop": 5,
+    "mobile": 0,
+    "tablet": 0
+  },
+  "dailyViews": {
+    "2026-09-26": 5
+  }
+}
