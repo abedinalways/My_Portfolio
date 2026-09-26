@@ -29,6 +29,9 @@ export function SmoothScroll({
     if (prefersReducedMotion) return;
 
     const lenis = new Lenis(LENIS_OPTIONS);
+    if (typeof window !== "undefined") {
+      (window as unknown as { lenis?: Lenis }).lenis = lenis;
+    }
 
     function raf(time: number): void {
       lenis.raf(time);
@@ -57,6 +60,9 @@ export function SmoothScroll({
     return () => {
       document.removeEventListener("click", handleAnchorClick);
       cancelAnimationFrame(rafId);
+      if (typeof window !== "undefined") {
+        delete (window as unknown as { lenis?: Lenis }).lenis;
+      }
       lenis.destroy();
     };
   }, []);

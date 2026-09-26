@@ -472,39 +472,39 @@ const PROJECTS: Project[] = [
         "# Frontend repository\ngit clone https://github.com/abedinalways/bio-identifier-frontend.git\ncd bio-identifier-frontend && pnpm install && pnpm dev\n\n# Backend repository\ngit clone https://github.com/abedinalways/bio-identifier-backend.git\ncd bio-identifier-backend && pnpm install && pnpm run start:dev",
     },
   },
-  {
-    id: "loom",
-    repoName: "abedinalways/loom-ai-workspace",
-    title: "Loom — AI Writing Surface & Thought Companion",
-    description:
-      "A focused writing surface where ideas, edits, and drafts coexist without chat clutter. Powered by real-time LLM suggestions.",
-    meta: "Design Engineer • 2024",
-    language: "TypeScript",
-    languageColor: "#3178c6",
-    stars: 184,
-    forks: 32,
-    topics: ["nextjs", "typescript", "ai-llm", "tailwindcss", "tiptap"],
-    isPinned: true,
-    updatedAt: "Updated 2 days ago",
-    imageRatio: 752 / 497,
-    image:
-      "https://cdn.dribbble.com/userupload/46128964/file/b92b9d268dd928642ca94bd49e32923a.jpg?resize=752x497&vertical=center",
-    imageAlt: "Loom AI writing companion mockup",
-    githubUrl: "https://github.com/abedinalways",
-    demoUrl: "https://loom-ai.demo.app",
-    readme: {
-      about:
-        "Loom is a modern distraction-free writing environment that integrates intelligent suggestions directly inline rather than hiding them in a side chat sidebar.",
-      features: [
-        "Inline real-time AI auto-complete & ghost text",
-        "Bi-directional linking between markdown document nodes",
-        "Local-first architecture with instantaneous offline sync",
-        "Custom rich-text canvas rendering engine",
-      ],
-      techStack: ["Next.js 15", "TypeScript", "TailwindCSS v4", "OpenAI API", "Zustand"],
-      quickStart: "git clone https://github.com/abedinalways/loom-ai-workspace.git\ncd loom-ai-workspace\npnpm install\npnpm dev",
-    },
-  },
+  // {
+  //   id: "loom",
+  //   repoName: "abedinalways/loom-ai-workspace",
+  //   title: "Loom — AI Writing Surface & Thought Companion",
+  //   description:
+  //     "A focused writing surface where ideas, edits, and drafts coexist without chat clutter. Powered by real-time LLM suggestions.",
+  //   meta: "Design Engineer • 2024",
+  //   language: "TypeScript",
+  //   languageColor: "#3178c6",
+  //   stars: 184,
+  //   forks: 32,
+  //   topics: ["nextjs", "typescript", "ai-llm", "tailwindcss", "tiptap"],
+  //   isPinned: true,
+  //   updatedAt: "Updated 2 days ago",
+  //   imageRatio: 752 / 497,
+  //   image:
+  //     "https://cdn.dribbble.com/userupload/46128964/file/b92b9d268dd928642ca94bd49e32923a.jpg?resize=752x497&vertical=center",
+  //   imageAlt: "Loom AI writing companion mockup",
+  //   githubUrl: "https://github.com/abedinalways",
+  //   demoUrl: "https://loom-ai.demo.app",
+  //   readme: {
+  //     about:
+  //       "Loom is a modern distraction-free writing environment that integrates intelligent suggestions directly inline rather than hiding them in a side chat sidebar.",
+  //     features: [
+  //       "Inline real-time AI auto-complete & ghost text",
+  //       "Bi-directional linking between markdown document nodes",
+  //       "Local-first architecture with instantaneous offline sync",
+  //       "Custom rich-text canvas rendering engine",
+  //     ],
+  //     techStack: ["Next.js 15", "TypeScript", "TailwindCSS v4", "OpenAI API", "Zustand"],
+  //     quickStart: "git clone https://github.com/abedinalways/loom-ai-workspace.git\ncd loom-ai-workspace\npnpm install\npnpm dev",
+  //   },
+  // },
 ];
 
 export type ProjectsProps = {
@@ -1068,6 +1068,7 @@ function ProjectPanel({
       {/* Panel */}
       <motion.aside
         key="panel"
+        data-lenis-prevent="true"
         initial={{ x: "100%", opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         exit={{ x: "100%", opacity: 0 }}
@@ -1075,7 +1076,7 @@ function ProjectPanel({
         className="fixed right-0 top-0 z-50 flex h-full w-full max-w-md flex-col overflow-hidden bg-background shadow-2xl sm:max-w-lg"
       >
         {/* Panel Header */}
-        <div className="flex items-center justify-between border-b border-border bg-card/80 backdrop-blur-md px-5 py-4">
+        <div className="flex shrink-0 items-center justify-between border-b border-border bg-card/80 backdrop-blur-md px-5 py-4">
           <div className="flex min-w-0 items-center gap-2.5">
             <BookOpen className="h-4 w-4 shrink-0 text-blue-500" />
             <span className="truncate font-mono text-sm font-bold text-foreground">
@@ -1109,7 +1110,7 @@ function ProjectPanel({
         </div>
 
         {/* Panel Body */}
-        <div className="flex-1 overflow-y-auto">
+        <div data-lenis-prevent="true" className="flex-1 min-h-0 overflow-y-auto overscroll-contain">
           {/* Hero image */}
           <div className="relative h-52 w-full overflow-hidden">
             <Image src={project.image} alt={project.imageAlt} fill className="object-cover" />
@@ -1358,7 +1359,7 @@ function ProjectPanel({
         </div>
 
         {/* Panel Footer */}
-        <div className="flex items-center justify-between border-t border-border bg-card/80 backdrop-blur-md px-5 py-4">
+        <div className="flex shrink-0 items-center justify-between border-t border-border bg-card/80 backdrop-blur-md px-5 py-4">
           <span className="font-mono text-xs text-muted-foreground">
             {project.isClientProject ? "Client Project • Production" : "MIT License"}
           </span>

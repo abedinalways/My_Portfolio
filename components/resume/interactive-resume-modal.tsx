@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import {
   Download,
   FileText,
@@ -41,6 +41,7 @@ export function InteractiveResumeModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [copiedEmail, setCopiedEmail] = useState(false);
   const [activeTab, setActiveTab] = useState<"all" | "experience" | "skills" | "education">("all");
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const email = "sheikh.minhajul1205045@gmail.com";
   const phone = "01303002784";
@@ -83,20 +84,26 @@ export function InteractiveResumeModal() {
     };
   }, []);
 
-  // Close on Escape key & manage body scroll lock
+  // Close on Escape key & manage body scroll lock + Lenis smooth scroll pause
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") handleClose();
     };
+
+    const win = typeof window !== "undefined" ? (window as unknown as { lenis?: { stop: () => void; start: () => void } }) : null;
+
     if (isOpen) {
       window.addEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "hidden";
+      win?.lenis?.stop();
     } else {
       document.body.style.overflow = "";
+      win?.lenis?.start();
     }
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "";
+      win?.lenis?.start();
     };
   }, [isOpen]);
 
@@ -108,6 +115,7 @@ export function InteractiveResumeModal() {
           aria-modal="true"
           aria-label="Interactive Resume"
           onClick={handleClose}
+          data-lenis-prevent="true"
           className="fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 print:p-0 print:static print:z-auto"
         >
           {/* Backdrop */}
@@ -126,10 +134,11 @@ export function InteractiveResumeModal() {
             exit={{ opacity: 0, scale: 0.96, y: 16 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
             onClick={(e) => e.stopPropagation()}
+            data-lenis-prevent="true"
             className="relative flex h-full max-h-[92vh] w-full max-w-4xl flex-col overflow-hidden rounded-3xl border border-border bg-background shadow-2xl print:max-h-none print:border-none print:shadow-none print:rounded-none"
           >
             {/* Top Bar Header */}
-            <div className="flex items-center justify-between border-b border-border bg-card/80 px-6 py-4 backdrop-blur-md print:hidden">
+            <div className="flex shrink-0 items-center justify-between border-b border-border bg-card/80 px-6 py-4 backdrop-blur-md print:hidden">
               <div className="flex items-center gap-2.5">
                 <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-blue-500/10 text-blue-500 dark:text-blue-400">
                   <FileText className="h-4 w-4" />
@@ -178,7 +187,7 @@ export function InteractiveResumeModal() {
             </div>
 
           {/* Tab Filter */}
-          <div className="flex items-center gap-1 border-b border-border/60 bg-muted/30 px-6 py-2 overflow-x-auto print:hidden">
+          <div className="flex shrink-0 items-center gap-1 border-b border-border/60 bg-muted/30 px-6 py-2 overflow-x-auto print:hidden">
             {(
               [
                 { id: "all", label: "Full View" },
@@ -203,7 +212,12 @@ export function InteractiveResumeModal() {
           </div>
 
           {/* Modal Scrollable Content */}
-          <div className="flex-1 overflow-y-auto p-6 sm:p-10 space-y-8">
+          <div
+            ref={scrollRef}
+            data-lenis-prevent="true"
+            onWheel={(e) => e.stopPropagation()}
+            className="flex-1 min-h-0 overflow-y-auto overscroll-contain p-6 sm:p-10 space-y-8 [scrollbar-width:thin] [scrollbar-color:rgba(156,163,175,0.4)_transparent] [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-foreground/20 hover:[&::-webkit-scrollbar-thumb]:bg-foreground/35"
+          >
             {/* Header info */}
             <div className="border-b border-border/60 pb-6">
               <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
@@ -542,7 +556,7 @@ export function InteractiveResumeModal() {
           </div>
 
           {/* Modal Footer CTA */}
-          <div className="flex items-center justify-between border-t border-border bg-card/90 px-6 py-4 backdrop-blur-md print:hidden">
+          <div className="flex shrink-0 items-center justify-between border-t border-border bg-card/90 px-6 py-4 backdrop-blur-md print:hidden">
             <div className="text-xs text-muted-foreground">
               Interested in working together?{" "}
               <Link
