@@ -17,22 +17,38 @@ KEY TECHNICAL SKILLS:
 - Tooling & Practices: Git/GitHub, PWA, WCAG AAA accessibility, performance optimization, Figma design systems.
 
 FEATURED PROJECTS:
-1. Loom — AI Writing Surface & Thought Companion
-   - Tech: Next.js 15, TypeScript, Tailwind CSS v4, OpenAI API, Zustand
-   - Summary: Distraction-free writing environment with real-time inline ghost text suggestions, bi-directional linking between markdown document nodes, and local-first architecture.
-   - GitHub: https://github.com/abedinalways
-2. Atlas Studio — Creative Studio Identity & Platform
-   - Tech: React 19, Three.js, GSAP, Tailwind CSS
-   - Summary: Full brand system and interactive showcase with custom 3D WebGL shaders, fluid layout transitions, and WCAG AAA accessibility.
-3. Rhythm — Calm Analytics for Indie Founders
-   - Tech: Python 3.12, FastAPI, SQLAlchemy, Next.js, Chart.js
-   - Summary: Weekly analytics digest that turns raw Stripe, Mixpanel, and PostHog telemetry into simple human narrative insights without dashboard noise.
-4. Groove — Music School Booking & Scheduling Engine
-   - Tech: React, Node.js, Express, Stripe API, MongoDB
-   - Summary: Timezone-aware booking engine and split payment system for music academies, handling thousands of student bookings.
-5. Fieldnote — Pocket Research Tool for Product Teams
-   - Tech: TypeScript, IndexedDB, Vector Search, PWA
-   - Summary: Fast qualitative research synthesis tool for capturing quotes, tagging patterns, and semantic clustering.
+1. TableRounds — Medical & Surgical Board Examination Platform
+   - Tech: Next.js 16 (App Router), React 19, TypeScript, Redux Toolkit, Socket.io, Recharts
+   - Summary: Clinician-built board examination platform featuring question banks, dynamic quiz runner, and global leaderboards.
+   - Live: https://tablerounds.ai
+2. ITBA Expo 2027 — Exhibition Stand Booking & Management Platform
+   - Tech: Next.js 16, React 19, TypeScript, Stripe Elements, Socket.io, Recharts, SVG Canvas
+   - Summary: Interactive SVG floor plan stand booking platform with Stripe checkout and organizer analytics dashboard.
+   - Live: https://itbaexpo.ie
+3. Kreatovate Project Suite — AI Marketing & Consulting Ecosystem
+   - Tech: Next.js, React 19, TypeScript, GSAP, Tailwind CSS, Shadcn/UI
+   - Summary: Multi-platform enterprise digital ecosystem for business consulting, workforce management, and innovation.
+   - Live: https://kreatovate.com
+4. Fleetos Pro — Multi-Tenant Freight & Dispatch Management Platform
+   - Tech: Next.js 16.1, React 19, TypeScript, Redux Toolkit, Socket.io, Chart.js, Recharts
+   - Summary: Supply chain platform with isolated workspaces for Dispatchers, Admins, and Super Admins, load dispatching, and live tracking.
+   - Live: https://fleetos.pro
+5. Waffless — Client & Video Editor Marketplace
+   - Tech: Next.js 16.1, React 19, TypeScript, Redux Toolkit, RTK Query, TanStack Table, ApexCharts
+   - Summary: Two-sided marketplace connecting clients and video editors with route-isolated workspaces and real-time messaging.
+   - Live: https://affless-frontend.vercel.app
+6. Apsu — Digital Health & Clinical Assessment Platform
+   - Tech: Next.js 16, React 19, TypeScript, Tailwind CSS, shadcn/ui, Zod, React Hook Form
+   - Summary: Digital telehealth platform supporting multi-step clinical assessment flows for weight loss, birth control, and sleep.
+   - Live: https://liuentung-front-end.vercel.app
+7. Bio-Identifier — AI Snake & Insect Recognition
+   - Tech: Next.js 16, NestJS, TypeScript, Computer Vision, Prisma ORM
+   - Summary: Intelligent platform powered by computer vision to identify snake and insect species, assess venomous risk, and explore biological taxonomy.
+   - GitHub: https://github.com/abedinalways/bio-identifier-frontend
+8. Loom — AI Writing Surface & Thought Companion
+   - Tech: Next.js, TypeScript, Tailwind CSS v4, OpenAI API, Zustand
+   - Summary: Distraction-free writing environment with real-time inline ghost text suggestions and local-first sync.
+
 
 CONTACT & CONNECT:
 - GitHub: https://github.com/abedinalways

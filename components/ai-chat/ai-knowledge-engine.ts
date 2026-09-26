@@ -47,9 +47,9 @@ function getLocalFallbackResponse(userQuery: string): string {
       "3. **Kreatovate Project Suite** — AI Marketing & Business Consulting Ecosystem (Next.js, GSAP, Tailwind, Shadcn/UI) [Live: kreatovate.com]\n" +
       "4. **Fleetos Pro** — Freight & Logistics Dispatch Management Platform (Next.js 16, React 19, Socket.io, RTK Query) [Live: fleetos.pro]\n" +
       "5. **Waffless** — Client & Video Editor Marketplace (Next.js 16, React 19, RTK Query, TanStack Table) [Live: affless-frontend.vercel.app]\n" +
-      "6. **Bio-Identifier** — AI Snake & Insect Taxonomy Classifier (Next.js 16, NestJS, Computer Vision)\n" +
-      "7. **Loom AI Workspace** — AI writing companion surface (Next.js, TypeScript, OpenAI API)\n" +
-      "8. **Atlas Studio** — Creative studio platform with custom 3D WebGL shaders (React 19, Three.js)\n\n" +
+      "6. **Apsu** — Digital Health & Clinical Assessment Platform (Next.js 16, React 19, Zod, React Hook Form) [Live: liuentung-front-end.vercel.app]\n" +
+      "7. **Bio-Identifier** — AI Snake & Insect Taxonomy Classifier (Next.js 16, NestJS, Computer Vision)\n" +
+      "8. **Loom AI Workspace** — AI writing companion surface (Next.js, TypeScript, OpenAI API)\n\n" +
       "You can explore case studies in the **Projects** section!"
     );
   } else if (

@@ -57,14 +57,6 @@ export function ContactCard(): ReactNode {
                     imageSrc="/x.svg"
                   />
                 </div>
-                <div className="flex flex-col items-center gap-1 text-center">
-                  <p className="text-[13px] tracking-tight text-foreground/70">
-                    2026 &copy; Built with Next.js
-                  </p>
-                  <p className="text-[12px] tracking-tight text-foreground/45">
-                    By React Bits Pro
-                  </p>
-                </div>
               </div>
             </div>
           </div>
