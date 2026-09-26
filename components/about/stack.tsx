@@ -12,22 +12,18 @@ type Chip = {
 };
 
 const CHIPS: Chip[] = [
-  {
-    label: "Figma",
-    slug: "figma",
-    bg: "#1f1f1f",
-    fg: "#ffffff",
-    iconUrl: "https://svgl.app/library/figma.svg",
-  },
-  { label: "React", slug: "react", bg: "#1FB6CB", fg: "#ffffff" },
-  { label: "Next.js", slug: "nextdotjs", bg: "#1f1f1f", fg: "#ffffff" },
-  { label: "TypeScript", slug: "typescript", bg: "#2F74C0", fg: "#ffffff" },
-  { label: "shadcn/ui", slug: "shadcnui", bg: "#5b54ff", fg: "#ffffff" },
-  { label: "Cursor", slug: "cursor", bg: "#111111", fg: "#ffffff" },
-  { label: "GSAP", slug: "gsap", bg: "#0AE448", fg: "#0a0a0a" },
+  { label: "Next.js", slug: "nextdotjs", bg: "#111111", fg: "#ffffff" },
+  { label: "React", slug: "react", bg: "#087ea4", fg: "#ffffff" },
+  { label: "TypeScript", slug: "typescript", bg: "#3178C6", fg: "#ffffff" },
+  { label: "NestJS", slug: "nestjs", bg: "#E0234E", fg: "#ffffff" },
+  { label: "Tailwind CSS", slug: "tailwindcss", bg: "#06B6D4", fg: "#ffffff" },
+  { label: "PostgreSQL", slug: "postgresql", bg: "#336791", fg: "#ffffff" },
+  { label: "Prisma", slug: "prisma", bg: "#2D3748", fg: "#ffffff" },
+  { label: "Docker", slug: "docker", bg: "#2496ED", fg: "#ffffff" },
+  { label: "Node.js", slug: "nodedotjs", bg: "#5FA04E", fg: "#ffffff" },
+  { label: "GSAP", slug: "greensock", bg: "#88CE02", fg: "#0a0a0a" },
+  { label: "MongoDB", slug: "mongodb", bg: "#47A248", fg: "#ffffff" },
   { label: "GitHub", slug: "github", bg: "#181717", fg: "#ffffff" },
-  { label: "Vercel", slug: "vercel", bg: "#0a0a0a", fg: "#ffffff" },
-  { label: "Tailwind CSS", slug: "tailwindcss", bg: "#2BBCF5", fg: "#ffffff" },
 ];
 
 const CHIP_RADIUS = 14;

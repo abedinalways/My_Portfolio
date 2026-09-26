@@ -877,15 +877,39 @@ function ProjectCard({
           />
         </div>
         {/* Dark gradient overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-        {/* Inspect hint */}
-        <div className="absolute bottom-3 left-3 flex items-center gap-1.5 rounded-lg bg-black/70 px-2.5 py-1.5 text-xs font-medium text-white backdrop-blur-sm opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-          <Code2 className="h-3.5 w-3.5 text-blue-400" />
-          View Case Study
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+        
+        {/* Hover action bar */}
+        <div className="absolute bottom-3 inset-x-3 flex items-center justify-between gap-2 opacity-0 transition-opacity duration-300 group-hover:opacity-100 z-10">
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onInspect();
+            }}
+            className="flex items-center gap-1.5 rounded-lg bg-black/70 px-2.5 py-1.5 text-xs font-medium text-white backdrop-blur-md transition-all hover:bg-black/90 hover:scale-105"
+          >
+            <Code2 className="h-3.5 w-3.5 text-blue-400" />
+            <span>Details</span>
+          </button>
+
+          {project.demoUrl && (
+            <a
+              href={project.demoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white shadow-lg backdrop-blur-md transition-all hover:bg-blue-500 hover:scale-105"
+            >
+              <span>Live Site</span>
+              <ExternalLink className="h-3.5 w-3.5" />
+            </a>
+          )}
         </div>
+
         {/* Pinned badge */}
         {project.isPinned && (
-          <div className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-black/60 px-2.5 py-1 text-[10px] font-semibold text-amber-400 backdrop-blur-sm">
+          <div className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-black/60 px-2.5 py-1 text-[10px] font-semibold text-amber-400 backdrop-blur-sm z-10">
             <Pin className="h-3 w-3" />
             Pinned
           </div>
@@ -895,14 +919,31 @@ function ProjectCard({
       {/* Content */}
       <div className={`flex flex-1 flex-col justify-between p-5 ${featured ? "md:p-7" : ""}`}>
         <div>
-          {/* Repo name */}
-          <div className="mb-3 flex items-center gap-1.5">
-            <span className="font-mono text-xs text-blue-500 dark:text-[#58a6ff]">
-              {project.repoName}
-            </span>
-            <span className="rounded-full border border-border px-1.5 py-0.5 text-[9px] font-medium text-muted-foreground">
-              {project.isClientProject ? "Client Work" : "Public"}
-            </span>
+          {/* Repo name & Live pill */}
+          <div className="mb-3 flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <span className="font-mono text-xs text-blue-500 dark:text-[#58a6ff] truncate">
+                {project.repoName}
+              </span>
+              <span className="shrink-0 rounded-full border border-border px-1.5 py-0.5 text-[9px] font-medium text-muted-foreground">
+                {project.isClientProject ? "Client Work" : "Public"}
+              </span>
+            </div>
+
+            {project.demoUrl && (
+              <a
+                href={project.demoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="group/live shrink-0 flex items-center gap-1 rounded-full border border-border/80 bg-background/80 px-2 py-0.5 text-[11px] font-medium text-muted-foreground transition-colors hover:border-blue-500/40 hover:bg-blue-500/10 hover:text-blue-600 dark:hover:text-[#58a6ff]"
+                title="Open Live Site in a new tab"
+              >
+                <span className="flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                <span>Live</span>
+                <ExternalLink className="h-3 w-3 transition-transform group-hover/live:translate-x-0.5" />
+              </a>
+            )}
           </div>
 
           {/* Title */}
@@ -933,7 +974,7 @@ function ProjectCard({
         </div>
 
         {/* Footer */}
-        <div className="mt-5 flex flex-wrap items-center justify-between gap-2 border-t border-border/50 pt-4 text-xs text-muted-foreground">
+        <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-border/50 pt-4 text-xs text-muted-foreground">
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1.5">
               <span
@@ -951,12 +992,33 @@ function ProjectCard({
               <span>{project.forks}</span>
             </div>
           </div>
-          <div className="flex items-center gap-3">
-            <span className="text-[11px]">{project.updatedAt}</span>
-            <span className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 dark:text-[#58a6ff]">
-              <FileCode2 className="h-3.5 w-3.5" />
-              README
-            </span>
+
+          {/* Action links: Details and Live Site */}
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onInspect();
+              }}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-muted/60 px-2.5 py-1.5 text-xs font-semibold text-foreground transition-colors hover:bg-muted hover:text-blue-600 dark:hover:text-[#58a6ff]"
+            >
+              <FileCode2 className="h-3.5 w-3.5 text-blue-500" />
+              <span>Details</span>
+            </button>
+
+            {project.demoUrl && (
+              <a
+                href={project.demoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white shadow-xs transition-all hover:bg-blue-700 hover:shadow-md hover:shadow-blue-500/25"
+              >
+                <span>Live Site</span>
+                <ExternalLink className="h-3.5 w-3.5" />
+              </a>
+            )}
           </div>
         </div>
       </div>
@@ -1023,14 +1085,27 @@ function ProjectPanel({
               {project.isClientProject ? "OVERVIEW" : "README.md"}
             </span>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="ml-2 rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
-            aria-label="Close panel"
-          >
-            <X className="h-4 w-4" />
-          </button>
+          <div className="flex items-center gap-2">
+            {project.demoUrl && (
+              <a
+                href={project.demoUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white shadow-xs transition-all hover:bg-blue-700 hover:shadow-md hover:shadow-blue-500/25"
+              >
+                <span>Live Site</span>
+                <ExternalLink className="h-3.5 w-3.5" />
+              </a>
+            )}
+            <button
+              type="button"
+              onClick={onClose}
+              className="rounded-lg p-1.5 text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+              aria-label="Close panel"
+            >
+              <X className="h-4 w-4" />
+            </button>
+          </div>
         </div>
 
         {/* Panel Body */}
@@ -1207,32 +1282,61 @@ function ProjectPanel({
               </div>
             ))}
 
-            {/* Live Ecosystem Platforms */}
-            {project.liveLinks && project.liveLinks.length > 0 && (
+            {/* Live Platform Links */}
+            {(project.liveLinks && project.liveLinks.length > 0) || project.demoUrl ? (
               <div>
-                <SectionLabel icon={<Globe className="h-3.5 w-3.5" />} text="Live Ecosystem Platforms" />
+                <SectionLabel
+                  icon={<Globe className="h-3.5 w-3.5" />}
+                  text={
+                    project.liveLinks && project.liveLinks.length > 1
+                      ? "Live Ecosystem Platforms"
+                      : "Live Platform Website"
+                  }
+                />
                 <div className="mt-3 flex flex-col gap-2">
-                  {project.liveLinks.map((link) => (
+                  {project.liveLinks && project.liveLinks.length > 0 ? (
+                    project.liveLinks.map((link) => (
+                      <a
+                        key={link.url}
+                        href={link.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="group/link flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3 transition-all hover:border-blue-500/40 hover:bg-muted"
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <span className="flex h-2 w-2 shrink-0 rounded-full bg-emerald-500" />
+                          <span className="truncate text-xs font-medium text-foreground">
+                            {link.label}
+                          </span>
+                        </div>
+                        <span className="flex items-center gap-1 text-[11px] font-mono text-muted-foreground group-hover/link:text-blue-500">
+                          Visit
+                          <ExternalLink className="h-3 w-3 shrink-0 transition-transform group-hover/link:translate-x-0.5" />
+                        </span>
+                      </a>
+                    ))
+                  ) : project.demoUrl ? (
                     <a
-                      key={link.url}
-                      href={link.url}
+                      href={project.demoUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="group/link flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3 transition-colors hover:border-blue-500/40 hover:bg-muted"
+                      className="group/link flex items-center justify-between rounded-xl border border-border bg-card px-4 py-3 transition-all hover:border-blue-500/40 hover:bg-muted"
                     >
                       <div className="flex items-center gap-2.5 min-w-0">
-                        <span className="flex h-2 w-2 shrink-0 rounded-full bg-emerald-500" />
-                        <span className="truncate text-xs font-medium text-foreground">{link.label}</span>
+                        <span className="flex h-2 w-2 shrink-0 rounded-full bg-emerald-500 animate-pulse" />
+                        <span className="truncate text-xs font-medium text-foreground">
+                          {project.demoUrl.replace(/^https?:\/\//, "")}
+                        </span>
                       </div>
                       <span className="flex items-center gap-1 text-[11px] font-mono text-muted-foreground group-hover/link:text-blue-500">
-                        Visit
+                        Visit Live
                         <ExternalLink className="h-3 w-3 shrink-0 transition-transform group-hover/link:translate-x-0.5" />
                       </span>
                     </a>
-                  ))}
+                  ) : null}
                 </div>
               </div>
-            )}
+            ) : null}
 
             {/* Topics */}
             <div>
